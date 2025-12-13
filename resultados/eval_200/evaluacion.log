@@ -1,0 +1,15 @@
+[2025-12-13 11:13:47,430] [INFO] Carpeta creada: resultados/eval_200_20251213_111347
+[2025-12-13 11:13:47,430] [INFO] =========== INICIO DE EVALUACIÓN ===========
+[2025-12-13 11:13:47,430] [INFO] Modelo: resultados/experimento_1000ep/modelos/modelo_ep_200.pth
+[2025-12-13 11:13:47,430] [INFO] Episodios: 5
+[2025-12-13 11:13:47,430] [INFO] GIF: True
+[2025-12-13 11:13:47,430] [INFO] [ENTORNO] Creando CarRacing-v3 con render_mode='rgb_array'
+[2025-12-13 11:14:06,473] [INFO] Episodio 1/5 | Reward=60.14 | Frames=1000
+[2025-12-13 11:14:23,792] [INFO] Episodio 2/5 | Reward=188.52 | Frames=1000
+[2025-12-13 11:14:41,629] [INFO] Episodio 3/5 | Reward=-23.33 | Frames=1000
+[2025-12-13 11:15:00,560] [INFO] Episodio 4/5 | Reward=272.31 | Frames=1000
+[2025-12-13 11:15:18,308] [INFO] Episodio 5/5 | Reward=451.72 | Frames=1000
+[2025-12-13 11:15:18,797] [INFO] CSV generado: resultados/eval_200_20251213_111347/metricas.csv
+[2025-12-13 11:15:22,761] [INFO] Gráfico guardado: resultados/eval_200_20251213_111347/grafico_rewards.png
+[2025-12-13 11:23:12,256] [INFO] GIF generado: resultados/eval_200_20251213_111347/mejor_episodio.gif
+[2025-12-13 11:23:12,258] [INFO] =========== FIN DE EVALUACIÓN ===========
