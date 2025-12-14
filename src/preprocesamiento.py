@@ -33,12 +33,13 @@ def process_state_image(frame):
     Este formato es ideal para la red convolucional del agente.
     """
 
-    logging.debug("Procesando frame: conversión a gris, resize y normalización.")
+    logging.debug("Procesando frame: grises, resize y normalización.")
 
-    # Convertir de RGB → Escala de grises
+    # Gymnasium entrega frames en RGB. OpenCV trabaja en BGR por defecto.
+    # Aquí convertimos a grises (el objetivo es eliminar color y simplificar).
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    # Redimensionar a 96×96 (tamaño usado por el DQN original)
+    # Redimensionar a 96×96 (tamaño de entrada del modelo)
     resized = cv2.resize(gray, (96, 96))
 
     # Normalización para mejorar la estabilidad numérica

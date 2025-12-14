@@ -1,7 +1,7 @@
 """
 ====================================================================
 EVALUACIÓN DEL MODELO ENTRENADO PARA CarRacing-v3 (GYMNASIUM)
-ersión final, limpia y defendible en clase.
+Versión final, limpia y defendible en clase.
 ====================================================================
 
 Incluye:

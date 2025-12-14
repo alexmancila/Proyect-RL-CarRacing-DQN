@@ -44,8 +44,7 @@ from src.configuracion import (
 # CarRacing tiene un control continuo (steer, gas, brake).
 # Para poder aplicar DQN (algoritmo para acciones discretas),
 # discretizamos el espacio continuo en 12 acciones fijas.
-#
-# Esto es EXACTAMENTE igual al repositorio original.
+# Nota: este es un esquema común para aplicar DQN en CarRacing.
 # =============================================================
 ACTION_SPACE = [
     (-1, 1, 0.2), (0, 1, 0.2), (1, 1, 0.2),
@@ -149,7 +148,7 @@ def entrenar(
 
             recompensa_total += recompensa
 
-            # 4. Penalización por malas rachas (del repositorio original)
+            # 4. Penalización por mala racha (heurística para cortar episodios)
             if t > 100 and recompensa < 0:
                 contador_castigos += 1
             else:

@@ -9,6 +9,7 @@ import numpy as np
 RUTA_RESULTADOS = "resultados"
 
 def cargar_metricas(nombre_exp):
+    """Lee el CSV de entrenamiento de un experimento y devuelve un resumen simple."""
     csv_path = f"{RUTA_RESULTADOS}/{nombre_exp}/metricas_entrenamiento.csv"
 
     rewards = []
@@ -32,6 +33,7 @@ def cargar_metricas(nombre_exp):
 
 
 def generar_tabla(experimentos):
+    """Imprime una tabla comparativa (consola) a partir de varios experimentos."""
     print("\n===== RESUMEN DE EXPERIMENTOS =====\n")
     print(f"{'Experimento':20} {'Reward Final':15} {'Reward Prom':15} {'Loss Prom':15}")
     print("-" * 70)

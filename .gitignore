@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/*.ipynb.backup
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+
+# Logs (keep folder if you want, ignore generated log files)
+logs/*.log
