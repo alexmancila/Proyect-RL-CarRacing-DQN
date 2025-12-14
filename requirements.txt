@@ -1,5 +1,6 @@
 gymnasium[box2d]
 numpy
+pandas
 matplotlib
 opencv-python
 pygame

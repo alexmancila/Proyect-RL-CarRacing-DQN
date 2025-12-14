@@ -3,6 +3,11 @@
 
 Este proyecto implementa un agente de **Aprendizaje por Refuerzo** utilizando el algoritmo **DQN** (Deep Q-Network) para aprender a jugar al entorno **CarRacing-v3** proporcionado por **Gymnasium**.
 
+El flujo principal es:
+- Entrenar el agente y guardar métricas/modelos.
+- Evaluar modelos guardados sin exploración (ε = 0).
+- Analizar resultados en el cuaderno.
+
 ## Estructura del Proyecto
 
 El proyecto está organizado de la siguiente manera:
@@ -74,9 +79,11 @@ Este proyecto está desarrollado en Python y requiere algunos paquetes y bibliot
     Se recomienda utilizar un entorno virtual. Puedes crear uno con:
 
     ```
-    python3 -m venv .venv
-    source .venv/bin/activate  # En Linux/Mac
-    .venv\Scriptsctivate  # En Windows
+    python -m venv .venv
+    # Linux/Mac:
+    source .venv/bin/activate
+    # Windows (PowerShell):
+    .\.venv\Scripts\Activate.ps1
     ```
 
     Luego, instala las dependencias:
@@ -91,22 +98,49 @@ Este proyecto está desarrollado en Python y requiere algunos paquetes y bibliot
     - `opencv-python` (para el procesamiento de imágenes)
     - `numpy` (para el manejo de matrices)
     - `matplotlib` (para la visualización de resultados)
+    - `pandas` (para el análisis de métricas en el cuaderno)
     - `imageio` (para la creación de GIFs)
 
-## Ejecución
+## Ejecución rápida (recomendado)
 
-Para entrenar el modelo, ejecute:
+### Entrenamiento
 
-```
-python src/main.py --model "ruta/del/modelo.pth" --start 1 --end 1000 --epsilon 1.0
-```
-
-Si no tienes un modelo previo, el sistema entrenará desde el inicio. Los modelos entrenados se guardarán en la carpeta `modelos`.
-
-Para probar el modelo entrenado, ejecuta:
+Entrenar desde cero (por defecto llega a 1000 episodios y guarda checkpoints):
 
 ```
-python src/probar_modelo.py --model "ruta/del/modelo.pth" --episodes 3 --gif
+python main.py --nombre-exp experimento_1000ep --end 1000 --epsilon 1.0
+```
+
+Entrenar con render (más lento, pero sirve para observar):
+
+```
+python main.py --render on --nombre-exp experimento_1000ep
+```
+
+### Evaluación
+
+Evaluar un modelo guardado (sin exploración) y generar GIF:
+
+```
+python tests/probar_modelo.py --model "resultados/experimento_1000ep/modelos/modelo_ep_1000.pth" --episodes 5 --gif --exp eval_1000
+```
+
+Nota: por defecto el evaluador crea una carpeta con timestamp (por ejemplo `resultados/eval_1000_YYYYMMDD_HHMMSS/`). Si quieres una carpeta fija como `resultados/eval_1000/`, puedes renombrarla después.
+
+## Ejecución (detallada)
+
+Para entrenar el modelo, ejecuta:
+
+```
+python main.py --start 1 --end 1000 --epsilon 1.0 --nombre-exp experimento_1000ep
+```
+
+Si tienes un modelo previo y quieres continuar, puedes cargarlo desde el código (o extender `main.py` para reanudar con `--model`).
+
+Para evaluar un modelo entrenado, ejecuta:
+
+```
+python tests/probar_modelo.py --model "ruta/del/modelo.pth" --episodes 5 --gif
 ```
 
 ## Descripción del Código
@@ -150,7 +184,7 @@ En la carpeta `experimento_1000ep/` se almacenan las métricas generadas durante
 
 - `grafico_reward.png`: evolución de la recompensa a lo largo de los episodios de entrenamiento.
 - `grafico_loss.png`: comportamiento de la función de pérdida durante el aprendizaje.
-- `grafico_epsilon.png`: reducción progresiva del parámetro epsilon (exploración).
+- `grafico_epsilon.png`: evolución de epsilon (exploración), que en este experimento cae rápido al inicio y luego se mantiene cerca del mínimo.
 - `grafico_buffer.png`: crecimiento y estabilización del buffer de experiencias.
 - `metricas_entrenamiento.csv`: métricas numéricas del entrenamiento por episodio.
 
