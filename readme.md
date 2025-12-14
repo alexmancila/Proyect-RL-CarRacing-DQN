@@ -1,12 +1,18 @@
-
 # Proyecto Aprendizaje por Refuerzo en el entorno CarRacing-v3
 
 Este proyecto implementa un agente de **Aprendizaje por Refuerzo** utilizando el algoritmo **DQN** (Deep Q-Network) para aprender a jugar al entorno **CarRacing-v3** proporcionado por **Gymnasium**.
 
 El flujo principal es:
+
 - Entrenar el agente y guardar métricas/modelos.
 - Evaluar modelos guardados sin exploración (ε = 0).
 - Analizar resultados en el cuaderno.
+
+## Reporte (cuaderno con resultados)
+
+El reporte completo del proyecto está en el cuaderno de Jupyter, donde se muestran los resultados ya corridos (gráficas, tablas de métricas y conclusiones):
+
+- [notebooks/entrenamiento_y_resultados.ipynb](notebooks/entrenamiento_y_resultados.ipynb)
 
 ## Estructura del Proyecto
 
@@ -69,37 +75,37 @@ Este proyecto está desarrollado en Python y requiere algunos paquetes y bibliot
 
 1. **Clonar el repositorio:**
 
-    ```
-    git clone https://github.com/alexmancila/Proyect-RL-CarRacing-DQN.git
-    cd Proyect-RL-CarRacing-DQN
-    ```
-
+   ```
+   git clone https://github.com/alexmancila/Proyect-RL-CarRacing-DQN.git
+   cd Proyect-RL-CarRacing-DQN
+   ```
 2. **Instalar dependencias:**
 
-    Se recomienda utilizar un entorno virtual. Puedes crear uno con:
+   Se recomienda utilizar un entorno virtual. Puedes crear uno con:
 
-    ```
-    python -m venv .venv
-    # Linux/Mac:
-    source .venv/bin/activate
-    # Windows (PowerShell):
-    .\.venv\Scripts\Activate.ps1
-    ```
+   ```
+   python -m venv .venv
+   # Linux/Mac:
+   source .venv/bin/activate
+   # Windows (PowerShell):
+   .\.venv\Scripts\Activate.ps1
+   ```
 
-    Luego, instala las dependencias:
+   Luego, instala las dependencias:
 
-    ```
-    pip install -r requirements.txt
-    ```
+   ```
+   pip install -r requirements.txt
+   ```
 
-    Los paquetes principales son:
-    - `gymnasium` (para el entorno CarRacing-v3)
-    - `torch` (para el modelo DQN)
-    - `opencv-python` (para el procesamiento de imágenes)
-    - `numpy` (para el manejo de matrices)
-    - `matplotlib` (para la visualización de resultados)
-    - `pandas` (para el análisis de métricas en el cuaderno)
-    - `imageio` (para la creación de GIFs)
+   Los paquetes principales son:
+
+   - `gymnasium` (para el entorno CarRacing-v3)
+   - `torch` (para el modelo DQN)
+   - `opencv-python` (para el procesamiento de imágenes)
+   - `numpy` (para el manejo de matrices)
+   - `matplotlib` (para la visualización de resultados)
+   - `pandas` (para el análisis de métricas en el cuaderno)
+   - `imageio` (para la creación de GIFs)
 
 ## Ejecución rápida (recomendado)
 
@@ -148,31 +154,36 @@ python tests/probar_modelo.py --model "ruta/del/modelo.pth" --episodes 5 --gif
 El código se organiza en módulos separados:
 
 ### `agente.py`
+
 Implementa la clase `AgenteDQN`, que utiliza una red neuronal profunda (DQN) para aprender a jugar al entorno. La red neuronal está basada en **PyTorch**.
 
 ### `entorno.py`
+
 Este archivo contiene el código para inicializar el entorno `CarRacing-v3` de **Gymnasium**, y permite la interacción con el agente.
 
 ### `preprocesamiento.py`
+
 Aquí se encuentran las funciones para procesar los frames del entorno, convirtiéndolos a escala de grises y reduciendo su tamaño para que el agente pueda aprender de ellos.
 
 ### `configuracion.py`
+
 Contiene los parámetros de configuración globales, como la tasa de descuento `GAMMA`, el tamaño de la memoria `TAMANO_MEMORIA`, y otros hiperparámetros del agente.
 
 ### `entrenamiento.py`
+
 El script encargado de entrenar el agente utilizando el algoritmo **DQN**. A lo largo del entrenamiento, el agente aprende a tomar decisiones a partir de su experiencia en el entorno.
 
 ### `probar_modelo.py`
+
 Este archivo permite cargar un modelo entrenado previamente y evaluarlo en varios episodios para medir su rendimiento.
 
 ### `probar_entorno.py`
-Un script básico para comprobar que el entorno CarRacing-v3 se está cargando correctamente y funciona sin errores.
 
+Un script básico para comprobar que el entorno CarRacing-v3 se está cargando correctamente y funciona sin errores.
 
 ## Diagrama de Arquitectura del Proyecto
 
 ![Diagrama de arquitectura del proyecto](diagrama.png)
-
 
 ## Resultados
 
@@ -198,6 +209,7 @@ Para evaluar el desempeño del modelo entrenado, se realizaron ejecuciones contr
 - `eval_1000/`: evaluación del modelo entrenado con 1000 episodios.
 
 Cada carpeta de evaluación contiene:
+
 - `metricas.csv`: resultados de reward y duración por episodio evaluado.
 - `grafico_rewards.png`: recompensa obtenida en cada episodio de evaluación.
 - `mejor_episodio.gif`: animación del mejor episodio registrado.
@@ -205,3 +217,25 @@ Cada carpeta de evaluación contiene:
 
 ---
 
+## Referencias (base teórica)
+
+* Mnih, V., Kavukcuoglu, K., Silver, D., Rusu, A. A., Veness, J., Bellemare, M. G., Graves, A., Riedmiller, M., Fidjeland, A. K., Ostrovski, G., Petersen, S., Beattie, C., Sadik, A., Antonoglou, I., King, H., Kumaran, D., Wierstra, D., Legg, S., & Hassabis, D. (2015). Human-level control through deep reinforcement learning. *Nature, 518*, 529–533. [https://doi.org/10.1038/nature14236](https://doi.org/10.1038/nature14236) ([Nature][1])
+* van Hasselt, H., Guez, A., & Silver, D. (2016). Deep reinforcement learning with double Q-learning. In *Proceedings of the Thirtieth AAAI Conference on Artificial Intelligence (AAAI-16)* (pp. 2094–2100). AAAI Press. [https://doi.org/10.1609/aaai.v30i1.10295](https://doi.org/10.1609/aaai.v30i1.10295) ([DBLP][2])
+* Wang, Z., Schaul, T., Hessel, M., van Hasselt, H., Lanctot, M., & de Freitas, N. (2016). Dueling network architectures for deep reinforcement learning. In M. F. Balcan & K. Q. Weinberger (Eds.), *Proceedings of the 33rd International Conference on Machine Learning* (Vol. 48, pp. 1995–2003). PMLR. [https://proceedings.mlr.press/v48/wangf16.html](https://proceedings.mlr.press/v48/wangf16.html) ([Proceedings of Machine Learning Research][3])
+* Schaul, T., Quan, J., Antonoglou, I., & Silver, D. (2016). Prioritized experience replay. In *International Conference on Learning Representations (ICLR 2016)*. [https://arxiv.org/abs/1511.05952](https://arxiv.org/abs/1511.05952) ([arXiv][4])
+* Mnih, V., Puigdomenech Badia, A., Mirza, M., Graves, A., Lillicrap, T., Harley, T., Silver, D., & Kavukcuoglu, K. (2016). Asynchronous methods for deep reinforcement learning. In M. F. Balcan & K. Q. Weinberger (Eds.), *Proceedings of the 33rd International Conference on Machine Learning* (Vol. 48, pp. 1928–1937). PMLR. [https://proceedings.mlr.press/v48/mniha16.html](https://proceedings.mlr.press/v48/mniha16.html) ([Proceedings of Machine Learning Research][5])
+* Schulman, J., Wolski, F., Dhariwal, P., Radford, A., & Klimov, O. (2017). Proximal policy optimization algorithms (arXiv:1707.06347). *arXiv*. [https://arxiv.org/abs/1707.06347](https://arxiv.org/abs/1707.06347) ([arXiv][6])
+* Farama Foundation. (n.d.). *Car Racing (CarRacing-v3)*. Gymnasium Documentation. Recuperado el 13 de diciembre de 2025, de https://gymnasium.farama.org/environments/box2d/car_racing/
+* Paszke, A., & Towers, M. (2025, 16 de junio). *Reinforcement Learning (DQN) Tutorial*. PyTorch Tutorials. https://docs.pytorch.org/tutorials/intermediate/reinforcement_q_learning.html
+
+### Software y librerías 
+
+* Bradski, G. (2000). The OpenCV Library. *Dr. Dobb’s Journal of Software Tools*.
+* Harris, C. R., Millman, K. J., van der Walt, S. J., Gommers, R., Virtanen, P., Cournapeau, D., Wieser, E., Taylor, J., Berg, S., Smith, N. J., Kern, R., Picus, M., Hoyer, S., van Kerkwijk, M. H., Brett, M., Haldane, A., Del Río, J. F., Wiebe, M., Peterson, P., Gérard-Marchant, P., Sheppard, K., Reddy, T., Weckesser, W., Abbasi, H., Gohlke, C., & Oliphant, T. E. (2020). Array programming with NumPy. *Nature, 585*(7825), 357–362. https://doi.org/10.1038/s41586-020-2649-2
+* Hunter, J. D. (2007). Matplotlib: A 2D graphics environment. *Computing in Science & Engineering, 9*(3), 90–95. https://doi.org/10.1109/MCSE.2007.55
+* McKinney, W. (2010). Data structures for statistical computing in Python. In *Proceedings of the 9th Python in Science Conference* (pp. 56–61). https://conference.scipy.org/proceedings/scipy2010/mckinney.html
+* Paszke, A., Gross, S., Massa, F., Lerer, A., Bradbury, J., Chanan, G., Killeen, T., Lin, Z., Gimelshein, N., Antiga, L., Desmaison, A., Kopf, A., Yang, E., DeVito, Z., Raison, M., Tejani, A., Chilamkurthy, S., Steiner, B., Fang, L., Bai, J., & Chintala, S. (2019). PyTorch: An imperative style, high-performance deep learning library. In H. Wallach, H. Larochelle, A. Beygelzimer, F. d’Alché-Buc, E. Fox, & R. Garnett (Eds.), *Advances in Neural Information Processing Systems 32*. https://arxiv.org/abs/1912.01703
+
+## Transparencia (uso de herramientas)
+
+El desarrollo del proyecto (diseño, implementación, ejecución de experimentos y análisis) fue realizado por el Grupo 4 del Curso de "Aprendizaje con reforzamiento" de la maestría de inteligencia artificial de la Universidad Nacional de Ingeniería (Lima, semestre 20225-2). Se utilizaron herramientas de apoyo (incluyendo asistentes de IA) para mejorar redacción, documentación y consistencia del reporte.

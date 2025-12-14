@@ -178,8 +178,8 @@ class AgenteDQN:
 
     def memorize(self, state, action, reward, next_state, done):
         """
-        Compatible con el repositorio original:
-        guardamos el índice de la acción, no la tupla completa.
+        Guardamos el índice de la acción (no la tupla completa) para que la
+        transición quede compacta y sea fácil de almacenar/muestrear.
         """
         action_index = self.action_space.index(action)
         self.memoria.append((state, action_index, reward, next_state, done))
