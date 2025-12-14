@@ -44,7 +44,9 @@ from src.configuracion import (
 # CarRacing tiene un control continuo (steer, gas, brake).
 # Para poder aplicar DQN (algoritmo para acciones discretas),
 # discretizamos el espacio continuo en 12 acciones fijas.
-# Nota: este es un esquema común para aplicar DQN en CarRacing.
+# Nota: esta discretización es una decisión de ingeniería para adaptar DQN.
+# Referencia del entorno (acción/observación/recompensa):
+#   Gymnasium CarRacing-v3: https://gymnasium.farama.org/environments/box2d/car_racing/
 # =============================================================
 ACTION_SPACE = [
     (-1, 1, 0.2), (0, 1, 0.2), (1, 1, 0.2),

@@ -3,6 +3,10 @@
 # -------------------------------------------------------------
 # Este módulo transforma las imágenes crudas del entorno en
 # representaciones compactas y útiles para la red neuronal DQN.
+# El enfoque (grises + normalización + stack de 4 frames) sigue el pipeline
+# típico usado en DQN con entradas visuales (estilo Atari):
+#   - Mnih et al. (2013): https://arxiv.org/abs/1312.5602
+#   - Mnih et al. (2015): https://doi.org/10.1038/nature14236
 #
 # Las operaciones realizadas buscan:
 #   1) reducir la dimensionalidad de la imagen

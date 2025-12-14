@@ -1,6 +1,6 @@
 # Proyecto Aprendizaje por Refuerzo en el entorno CarRacing-v3
 
-Este proyecto implementa un agente de **Aprendizaje por Refuerzo** utilizando el algoritmo **DQN** (Deep Q-Network) para aprender a jugar al entorno **CarRacing-v3** proporcionado por **Gymnasium**.
+Este proyecto implementa un agente de **Aprendizaje por Refuerzo** utilizando el algoritmo **DQN** (Deep Q-Network) para aprender a jugar al entorno **CarRacing-v3** proporcionado por **Gymnasium** (Mnih et al., 2015; Farama Foundation, n.d.).
 
 El flujo principal es:
 
@@ -66,7 +66,7 @@ Proyect-RL-CarRacing-DQN/
 │
 ├── main.py # Script principal de entrenamiento
 ├── requirements.txt
-└── README.md
+└── readme.md
 ```
 
 ## Instalación
@@ -99,13 +99,15 @@ Este proyecto está desarrollado en Python y requiere algunos paquetes y bibliot
 
    Los paquetes principales son:
 
-   - `gymnasium` (para el entorno CarRacing-v3)
+   - `gymnasium[box2d]` (para el entorno CarRacing-v3)
    - `torch` (para el modelo DQN)
+   - `torchvision` (utilidades complementarias de PyTorch)
    - `opencv-python` (para el procesamiento de imágenes)
    - `numpy` (para el manejo de matrices)
    - `matplotlib` (para la visualización de resultados)
    - `pandas` (para el análisis de métricas en el cuaderno)
-   - `imageio` (para la creación de GIFs)
+   - `pygame` (dependencia de render/ventana en algunos entornos)
+   - `imageio` y `imageio-ffmpeg` (para la creación de GIFs)
 
 ## Ejecución rápida (recomendado)
 
@@ -163,7 +165,7 @@ Este archivo contiene el código para inicializar el entorno `CarRacing-v3` de *
 
 ### `preprocesamiento.py`
 
-Aquí se encuentran las funciones para procesar los frames del entorno, convirtiéndolos a escala de grises y reduciendo su tamaño para que el agente pueda aprender de ellos.
+Aquí se encuentran las funciones para procesar los frames del entorno (escala de grises, normalización y *frame stacking*). Este diseño sigue el pipeline típico usado en DQN con entradas visuales (estilo Atari) para reducir dimensionalidad y capturar dinámica temporal (Mnih et al., 2013; Mnih et al., 2015).
 
 ### `configuracion.py`
 
@@ -219,12 +221,13 @@ Cada carpeta de evaluación contiene:
 
 ## Referencias (base teórica)
 
-* Mnih, V., Kavukcuoglu, K., Silver, D., Rusu, A. A., Veness, J., Bellemare, M. G., Graves, A., Riedmiller, M., Fidjeland, A. K., Ostrovski, G., Petersen, S., Beattie, C., Sadik, A., Antonoglou, I., King, H., Kumaran, D., Wierstra, D., Legg, S., & Hassabis, D. (2015). Human-level control through deep reinforcement learning. *Nature, 518*, 529–533. [https://doi.org/10.1038/nature14236](https://doi.org/10.1038/nature14236) ([Nature][1])
-* van Hasselt, H., Guez, A., & Silver, D. (2016). Deep reinforcement learning with double Q-learning. In *Proceedings of the Thirtieth AAAI Conference on Artificial Intelligence (AAAI-16)* (pp. 2094–2100). AAAI Press. [https://doi.org/10.1609/aaai.v30i1.10295](https://doi.org/10.1609/aaai.v30i1.10295) ([DBLP][2])
-* Wang, Z., Schaul, T., Hessel, M., van Hasselt, H., Lanctot, M., & de Freitas, N. (2016). Dueling network architectures for deep reinforcement learning. In M. F. Balcan & K. Q. Weinberger (Eds.), *Proceedings of the 33rd International Conference on Machine Learning* (Vol. 48, pp. 1995–2003). PMLR. [https://proceedings.mlr.press/v48/wangf16.html](https://proceedings.mlr.press/v48/wangf16.html) ([Proceedings of Machine Learning Research][3])
-* Schaul, T., Quan, J., Antonoglou, I., & Silver, D. (2016). Prioritized experience replay. In *International Conference on Learning Representations (ICLR 2016)*. [https://arxiv.org/abs/1511.05952](https://arxiv.org/abs/1511.05952) ([arXiv][4])
-* Mnih, V., Puigdomenech Badia, A., Mirza, M., Graves, A., Lillicrap, T., Harley, T., Silver, D., & Kavukcuoglu, K. (2016). Asynchronous methods for deep reinforcement learning. In M. F. Balcan & K. Q. Weinberger (Eds.), *Proceedings of the 33rd International Conference on Machine Learning* (Vol. 48, pp. 1928–1937). PMLR. [https://proceedings.mlr.press/v48/mniha16.html](https://proceedings.mlr.press/v48/mniha16.html) ([Proceedings of Machine Learning Research][5])
-* Schulman, J., Wolski, F., Dhariwal, P., Radford, A., & Klimov, O. (2017). Proximal policy optimization algorithms (arXiv:1707.06347). *arXiv*. [https://arxiv.org/abs/1707.06347](https://arxiv.org/abs/1707.06347) ([arXiv][6])
+* Mnih, V., Kavukcuoglu, K., Silver, D., Graves, A., Antonoglou, I., Wierstra, D., & Riedmiller, M. (2013). *Playing Atari with Deep Reinforcement Learning* (arXiv:1312.5602). *arXiv*. https://arxiv.org/abs/1312.5602
+* Mnih, V., Kavukcuoglu, K., Silver, D., Rusu, A. A., Veness, J., Bellemare, M. G., Graves, A., Riedmiller, M., Fidjeland, A. K., Ostrovski, G., Petersen, S., Beattie, C., Sadik, A., Antonoglou, I., King, H., Kumaran, D., Wierstra, D., Legg, S., & Hassabis, D. (2015). Human-level control through deep reinforcement learning. *Nature, 518*, 529–533. https://doi.org/10.1038/nature14236
+* van Hasselt, H., Guez, A., & Silver, D. (2016). Deep reinforcement learning with double Q-learning. In *Proceedings of the Thirtieth AAAI Conference on Artificial Intelligence (AAAI-16)* (pp. 2094–2100). AAAI Press. https://doi.org/10.1609/aaai.v30i1.10295
+* Wang, Z., Schaul, T., Hessel, M., van Hasselt, H., Lanctot, M., & de Freitas, N. (2016). Dueling network architectures for deep reinforcement learning. In M. F. Balcan & K. Q. Weinberger (Eds.), *Proceedings of the 33rd International Conference on Machine Learning* (Vol. 48, pp. 1995–2003). PMLR. https://proceedings.mlr.press/v48/wangf16.html
+* Schaul, T., Quan, J., Antonoglou, I., & Silver, D. (2016). Prioritized experience replay. In *International Conference on Learning Representations (ICLR 2016)*. https://arxiv.org/abs/1511.05952
+* Mnih, V., Puigdomenech Badia, A., Mirza, M., Graves, A., Lillicrap, T., Harley, T., Silver, D., & Kavukcuoglu, K. (2016). Asynchronous methods for deep reinforcement learning. In M. F. Balcan & K. Q. Weinberger (Eds.), *Proceedings of the 33rd International Conference on Machine Learning* (Vol. 48, pp. 1928–1937). PMLR. https://proceedings.mlr.press/v48/mniha16.html
+* Schulman, J., Wolski, F., Dhariwal, P., Radford, A., & Klimov, O. (2017). Proximal policy optimization algorithms (arXiv:1707.06347). *arXiv*. https://arxiv.org/abs/1707.06347
 * Farama Foundation. (n.d.). *Car Racing (CarRacing-v3)*. Gymnasium Documentation. Recuperado el 13 de diciembre de 2025, de https://gymnasium.farama.org/environments/box2d/car_racing/
 * Paszke, A., & Towers, M. (2025, 16 de junio). *Reinforcement Learning (DQN) Tutorial*. PyTorch Tutorials. https://docs.pytorch.org/tutorials/intermediate/reinforcement_q_learning.html
 
@@ -238,4 +241,4 @@ Cada carpeta de evaluación contiene:
 
 ## Transparencia (uso de herramientas)
 
-El desarrollo del proyecto (diseño, implementación, ejecución de experimentos y análisis) fue realizado por el Grupo 4 del Curso de "Aprendizaje con reforzamiento" de la maestría de inteligencia artificial de la Universidad Nacional de Ingeniería (Lima, semestre 20225-2). Se utilizaron herramientas de apoyo (incluyendo asistentes de IA) para mejorar redacción, documentación y consistencia del reporte.
+El desarrollo del proyecto (diseño, implementación, ejecución de experimentos y análisis) fue realizado por el Grupo 4 del curso de Aprendizaje por Refuerzo de la Maestría de Inteligencia Artificial de la Universidad Nacional de Ingeniería (Lima, semestre 2025-2). Se utilizaron herramientas de apoyo (incluyendo asistentes de IA) para mejorar redacción, documentación y consistencia del reporte.
