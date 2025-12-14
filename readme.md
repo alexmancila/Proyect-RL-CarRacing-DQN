@@ -1,4 +1,12 @@
 # Proyecto Aprendizaje por Refuerzo en el entorno CarRacing-v3
+Curso de Aprendizaje por reforzamienbto de la Maestría en Inteligenia artificial de la Universidad de Ingeniería (Lima, 2025-2)
+
+**Integrantes Grupo 4**:
+
+Koc Góngora, Luis Enrique
+Mancilla Antaya, Alex Felipe
+Meléndez García, Herbert Antonio
+Paitán Cano, Dennis Jack
 
 Este proyecto implementa un agente de **Aprendizaje por Refuerzo** utilizando el algoritmo **DQN** (Deep Q-Network) para aprender a jugar al entorno **CarRacing-v3** proporcionado por **Gymnasium** (Mnih et al., 2015; Farama Foundation, n.d.).
 
@@ -7,6 +15,9 @@ El flujo principal es:
 - Entrenar el agente y guardar métricas/modelos.
 - Evaluar modelos guardados sin exploración (ε = 0).
 - Analizar resultados en el cuaderno.
+
+Curso: Aprendizaje por Refuerzo (MIA-204)
+Grupo: 4
 
 ## Reporte (cuaderno con resultados)
 
