@@ -3,13 +3,10 @@ Curso de Aprendizaje por reforzamienbto de la Maestría en Inteligenia artificia
 
 **Integrantes Grupo 4**:
 
-Koc Góngora, Luis Enrique
-
-Mancilla Antaya, Alex Felipe
-
-Meléndez García, Herbert Antonio
-
-Paitán Cano, Dennis Jack
+* Koc Góngora, Luis Enrique
+* Mancilla Antaya, Alex Felipe
+* Meléndez García, Herbert Antonio
+* Paitán Cano, Dennis Jack
 
 Este proyecto implementa un agente de **Aprendizaje por Refuerzo** utilizando el algoritmo **DQN** (Deep Q-Network) para aprender a jugar al entorno **CarRacing-v3** proporcionado por **Gymnasium** (Mnih et al., 2015; Farama Foundation, n.d.).
 
