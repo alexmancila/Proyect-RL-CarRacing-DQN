@@ -1,0 +1,19 @@
+[2026-01-06 19:16:17,254] [INFO] Carpeta creada: resultados/eval_1000_double_dqn_20260106_191617
+[2026-01-06 19:16:17,256] [INFO] =========== INICIO DE EVALUACIÓN ===========
+[2026-01-06 19:16:17,256] [INFO] Modelo: resultados/experimento_1000ep_double_dqn/modelos/modelo_ep_1000.pth
+[2026-01-06 19:16:17,256] [INFO] Episodios: 5
+[2026-01-06 19:16:17,256] [INFO] GIF: True
+[2026-01-06 19:16:17,256] [INFO] Semilla fija: 123
+[2026-01-06 19:16:17,256] [INFO] Arquitectura detectada: Double DQN
+[2026-01-06 19:16:17,256] [INFO] [ENTORNO] Creando CarRacing-v3 | render_mode='rgb_array' | continuous=True | domain_randomize=False
+[2026-01-06 19:16:17,928] [INFO] Configuracion aplicada (cfg): Double DQN
+[2026-01-06 19:16:33,984] [INFO] Episodio 1/5 | Reward=883.33 | Frames=1000
+[2026-01-06 19:16:50,275] [INFO] Episodio 2/5 | Reward=321.22 | Frames=1000
+[2026-01-06 19:17:07,016] [INFO] Episodio 3/5 | Reward=278.29 | Frames=1000
+[2026-01-06 19:17:24,458] [INFO] Episodio 4/5 | Reward=854.39 | Frames=1000
+[2026-01-06 19:17:41,496] [INFO] Episodio 5/5 | Reward=501.35 | Frames=1000
+[2026-01-06 19:17:41,498] [INFO] CSV generado: resultados/eval_1000_double_dqn_20260106_191617/metricas.csv
+[2026-01-06 19:17:41,499] [INFO] Resumen | Avg=567.72 | Std=257.19 | Max=883.33
+[2026-01-06 19:17:42,014] [INFO] Gráfico guardado: resultados/eval_1000_double_dqn_20260106_191617/grafico_rewards.png
+[2026-01-06 19:21:02,284] [INFO] GIF generado: resultados/eval_1000_double_dqn_20260106_191617/mejor_episodio.gif
+[2026-01-06 19:21:02,285] [INFO] =========== FIN DE EVALUACIÓN ===========

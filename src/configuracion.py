@@ -112,3 +112,22 @@ SAVE_TRAINING_FREQUENCY = 25
 
 # Frecuencia para actualizar la red objetivo
 UPDATE_TARGET_MODEL_FREQUENCY = 5
+
+
+# =============================================================
+# DQN vs DOUBLE DQN
+# -------------------------------------------------------------
+# DQN clásico:
+#   y = r + gamma * max_a Q_target(s', a)
+#
+# Double DQN:
+#   a* = argmax_a Q_online(s', a)
+#   y  = r + gamma * Q_target(s', a*)
+#
+# Double DQN reduce la sobreestimación de valores Q.
+# =============================================================
+
+USAR_DOUBLE_DQN = True  # True → Double DQN | False → DQN clásico
+
+USAR_DUELING_DQN = True
+

@@ -6,19 +6,31 @@
 #   - Activar o desactivar render del entorno.
 #   - Sobrescribir hiperparámetros (gamma, lr, batch_size).
 #   - Inicializar sistema de logging profesional.
-#   - Lanzar el entrenamiento del agente DQN.
+#   - Fijar semillas aleatorias para reproducibilidad.
+#   - Registrar explícitamente el algoritmo activo (DQN / Double DQN).
+#   - Lanzar el entrenamiento del agente.
 #
-# Este archivo representa la entrada formal al sistema.
+# Este archivo representa la entrada formal y reproducible
+# al sistema de Aprendizaje por Refuerzo.
 # -----------------------------------------------------------
 
 import argparse
 import logging
 import os
+import random
 from datetime import datetime
 
-from src.entrenamiento import entrenar
-from src.configuracion import set_render_mode, GAMMA, LR, TRAINING_BATCH_SIZE
+import numpy as np
+import torch
 
+from src.entrenamiento import entrenar
+from src.configuracion import (
+    set_render_mode,
+    GAMMA,
+    LR,
+    TRAINING_BATCH_SIZE,
+    USAR_DOUBLE_DQN
+)
 
 # -----------------------------------------------------------
 # SISTEMA DE LOGGING
@@ -31,6 +43,7 @@ def configurar_logging(nombre_experimento: str):
     Permite:
         • registrar progreso del entrenamiento
         • guardar métricas y estados
+        • diferenciar experimentos (DQN vs Double DQN)
         • justificar decisiones en el informe académico
     """
     os.makedirs("logs", exist_ok=True)
@@ -55,6 +68,20 @@ def configurar_logging(nombre_experimento: str):
 # -----------------------------------------------------------
 if __name__ == "__main__":
 
+    # -------------------------------------------------------
+    # SEMILLA ALEATORIA (REPRODUCIBILIDAD)
+    # -------------------------------------------------------
+    # Se fijan semillas para garantizar que las comparaciones
+    # entre DQN y Double DQN sean justas y reproducibles.
+    # -------------------------------------------------------
+    SEED = 42
+    random.seed(SEED)
+    np.random.seed(SEED)
+    torch.manual_seed(SEED)
+
+    # -------------------------------------------------------
+    # PARSER DE ARGUMENTOS
+    # -------------------------------------------------------
     parser = argparse.ArgumentParser(
         description="Entrena el agente DQN para CarRacing-v3 usando PyTorch."
     )
@@ -62,7 +89,6 @@ if __name__ == "__main__":
     # -------------------------------------------------------
     # ARGUMENTOS BÁSICOS DE ENTRENAMIENTO
     # -------------------------------------------------------
-
     parser.add_argument(
         "-m", "--model",
         help="Ruta del modelo .pth previamente entrenado para continuar entrenamiento."
@@ -128,7 +154,7 @@ if __name__ == "__main__":
         "--nombre-exp",
         type=str,
         default="experimento_carracing",
-        help="Nombre del experimento (logs y carpeta de resultados)."
+        help="Nombre base del experimento (logs y resultados)."
     )
 
     args = parser.parse_args()
@@ -138,9 +164,11 @@ if __name__ == "__main__":
     # -------------------------------------------------------
     gamma = args.gamma if args.gamma is not None else GAMMA
     lr = args.lr if args.lr is not None else LR
-    batch_size = args.batch_size if args.batch_size is not None else TRAINING_BATCH_SIZE
+    batch_size = (
+        args.batch_size if args.batch_size is not None else TRAINING_BATCH_SIZE
+    )
 
-    # Validaciones básicas
+    # Validaciones básicas de seguridad
     if not (0 < gamma <= 1):
         raise ValueError("gamma debe estar en el rango (0, 1]")
 
@@ -151,12 +179,21 @@ if __name__ == "__main__":
         raise ValueError("batch_size debe ser mayor que cero")
 
     # -------------------------------------------------------
-    # APLICAR CONFIGURACIONES
+    # APLICAR CONFIGURACIONES GLOBALES
     # -------------------------------------------------------
     set_render_mode(args.render == "on")
-    configurar_logging(args.nombre_exp)
 
-    logging.info("=== Iniciando entrenamiento de CarRacing-v3 (DQN) ===")
+    # Se diferencia automáticamente el experimento según el algoritmo
+    nombre_algoritmo = "double_dqn" if USAR_DOUBLE_DQN else "dqn"
+    nombre_experimento = f"{args.nombre_exp}_{nombre_algoritmo}"
+
+    configurar_logging(nombre_experimento)
+
+    logging.info(f"Semilla fija para el experimento: {SEED}")
+    logging.info(
+        f"Algoritmo activo: {'Double DQN' if USAR_DOUBLE_DQN else 'DQN clasico'}"
+    )
+
     logging.info(
         f"Hiperparámetros iniciales | "
         f"gamma={gamma} | lr={lr} | batch_size={batch_size} | epsilon={args.epsilon}"
@@ -172,5 +209,5 @@ if __name__ == "__main__":
         gamma=gamma,
         lr=lr,
         batch_size=batch_size,
-        nombre_experimento=args.nombre_exp
+        nombre_experimento=nombre_experimento
     )

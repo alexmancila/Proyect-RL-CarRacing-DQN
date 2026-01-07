@@ -1,6 +1,19 @@
 # =============================================================
-# Agente DQN para CarRacing-v3 (Gymnasium)
-# Versión completamente documentada para fines educativos.
+# Agente DQN / Double DQN / Dueling DQN para CarRacing-v3
+# -------------------------------------------------------------
+# Implementa:
+#   - DQN clásico
+#   - Double DQN (flag USAR_DOUBLE_DQN)
+#   - Dueling DQN (flag USAR_DUELING_DQN)
+#
+# Todo comparte:
+#   - Replay Buffer
+#   - Política ε-greedy
+#   - Target Network
+#
+# Importante:
+#   - Si cambias USAR_DUELING_DQN, NO puedes cargar modelos viejos
+#     entrenados con otra arquitectura (state_dict no coincide).
 # =============================================================
 
 import random
@@ -13,232 +26,242 @@ import torch.optim as optim
 
 from src.configuracion import (
     GAMMA, LR, EPSILON_INICIAL, EPSILON_MINIMO, DECAY_EPSILON,
-    TAMANO_MEMORIA, STATE_STACK, STATE_HEIGHT, STATE_WIDTH
+    TAMANO_MEMORIA, STATE_STACK, STATE_HEIGHT, STATE_WIDTH,
+    USAR_DOUBLE_DQN, USAR_DUELING_DQN
 )
 
 # =============================================================
 # 1. RED NEURONAL DQN (Deep Q-Network)
-# -------------------------------------------------------------
-# Esta red neuronal es el “cerebro” del agente:
-# recibe un estado visual (frames del juego) y devuelve 12 valores,
-# uno por cada acción posible. Cada valor representa Q(s,a):
-# la estimación de tan buena es cada acción en ese estado.
 # =============================================================
 
 class DQN(nn.Module):
-    def __init__(self, num_acciones):
-        """
-        num_acciones: cantidad de acciones disponibles (12 en CarRacing)
+    """
+    Red convolucional que aproxima la función Q(s, a).
 
-        Arquitectura:
-        - 2 convoluciones
-        - 2 MaxPool
-        - Flatten
-        - Dense(216)
-        - Dense(num_acciones)
-        """
+    Entrada:
+        - Estado visual con shape (STATE_STACK, 96, 96)
+
+    Salida:
+        - Vector Q con un valor por cada acción discreta
+    """
+
+    def __init__(self, num_acciones):
         super().__init__()
 
-        # ---------------------------------------------------------
         # Bloque convolucional
-        # ---------------------------------------------------------
-        # Conv2D recibe: (batch, canales, alto, ancho)
-        # STATE_STACK = número de frames apilados (4).
-        #
-        # Primer Conv:
-        # - 6 filtros
-        # - kernel 7x7
-        # - stride 3 (bloque grueso para reducir tamaño rápido)
-        #
-        # MaxPool reduce la resolución a la mitad.
-        # ---------------------------------------------------------
-
         self.conv = nn.Sequential(
             nn.Conv2d(STATE_STACK, 6, kernel_size=7, stride=3),
             nn.ReLU(),
-
             nn.MaxPool2d(2),
 
             nn.Conv2d(6, 12, kernel_size=4),
             nn.ReLU(),
-
             nn.MaxPool2d(2),
         )
 
-        # ---------------------------------------------------------
-        # Cálculo automático del tamaño de la capa densa
-        # ---------------------------------------------------------
-        # Se pasa un tensor "dummy" para ver cuál es el tamaño final
-        # después de todas las convoluciones y MaxPool.
-        # Esto evita errores de dimensiones.
-        # ---------------------------------------------------------
+        # Cálculo dinámico del tamaño de la capa fully-connected
         with torch.no_grad():
             dummy = torch.zeros(1, STATE_STACK, STATE_HEIGHT, STATE_WIDTH)
-            conv_out = self.conv(dummy)
-            flat_dim = conv_out.numel()
+            flat_dim = self.conv(dummy).numel()
 
-        # ---------------------------------------------------------
-        # Bloque denso (fully-connected)
-        # ---------------------------------------------------------
+        # Bloque denso
         self.fc = nn.Sequential(
             nn.Flatten(),
             nn.Linear(flat_dim, 216),
             nn.ReLU(),
-            nn.Linear(216, num_acciones)  # salida = 12 valores Q
+            nn.Linear(216, num_acciones)
         )
 
     def forward(self, x):
-        """
-        Propagación hacia adelante:
-        estado → convoluciones → densas → valores Q.
-        """
         return self.fc(self.conv(x))
 
 
 # =============================================================
-# 2. CLASE AgenteDQN
-# -------------------------------------------------------------
-# Implementa:
-# - Politica ε-greedy
-# - Replay buffer
-# - Actualización de redes (online y target)
-# - Cálculo de la ecuación de Bellman
-#
-# Es el núcleo del aprendizaje por refuerzo.
+# 2. RED DUELING DQN
+# =============================================================
+
+class DuelingDQN(nn.Module):
+    """
+    Arquitectura Dueling:
+    separa el Valor del estado V(s) y la Ventaja A(s,a)
+
+    Q(s,a) = V(s) + (A(s,a) - mean(A(s,*)))
+    """
+
+    def __init__(self, num_acciones):
+        super().__init__()
+
+        # Mismo extractor convolucional que DQN (comparación justa)
+        self.conv = nn.Sequential(
+            nn.Conv2d(STATE_STACK, 6, kernel_size=7, stride=3),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
+
+            nn.Conv2d(6, 12, kernel_size=4),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
+        )
+
+        with torch.no_grad():
+            dummy = torch.zeros(1, STATE_STACK, STATE_HEIGHT, STATE_WIDTH)
+            flat_dim = self.conv(dummy).numel()
+
+        # Para mantener capacidad similar a tu DQN original (216)
+        self.value = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(flat_dim, 216),
+            nn.ReLU(),
+            nn.Linear(216, 1)
+        )
+
+        self.advantage = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(flat_dim, 216),
+            nn.ReLU(),
+            nn.Linear(216, num_acciones)
+        )
+
+    def forward(self, x):
+        features = self.conv(x)
+        value = self.value(features)
+        advantage = self.advantage(features)
+
+        # Q(s,a) = V(s) + (A(s,a) − mean(A))
+        return value + (advantage - advantage.mean(dim=1, keepdim=True))
+
+
+# =============================================================
+# 3. CLASE AgenteDQN
 # =============================================================
 
 class AgenteDQN:
+    """
+    Agente basado en:
+      - DQN (por defecto)
+      - Double DQN si USAR_DOUBLE_DQN = True
+      - Dueling DQN si USAR_DUELING_DQN = True
+
+    Nota:
+      - Dueling y Double son compatibles: "Dueling Double DQN"
+    """
 
     def __init__(self, action_space):
-        """
-        action_space:
-            Lista de tuplas (steer, gas, brake)
-            Ejemplo: (-1, 1, 0.2)
-        """
 
-        # ---------------------------------------------------------
-        # Definir espacio de acciones
-        # ---------------------------------------------------------
+        # Espacio de acciones discretizado
         self.action_space = action_space
         self.num_acciones = len(action_space)
 
-        # ---------------------------------------------------------
-        # Replay Buffer (Memoria de experiencias)
-        # ---------------------------------------------------------
+        # Replay Buffer
         self.memoria = deque(maxlen=TAMANO_MEMORIA)
 
-        # ---------------------------------------------------------
-        # Hiperparámetros del algoritmo DQN
-        # ---------------------------------------------------------
-        self.gamma = GAMMA                     # descuento futuro
-        self.epsilon = EPSILON_INICIAL         # probabilidad de explorar
-        self.epsilon_min = EPSILON_MINIMO      # mínimo ε
-        self.epsilon_decay = DECAY_EPSILON     # factor de decaimiento
+        # Hiperparámetros
+        self.gamma = GAMMA
+        self.epsilon = EPSILON_INICIAL
+        self.epsilon_min = EPSILON_MINIMO
+        self.epsilon_decay = DECAY_EPSILON
 
-        # ---------------------------------------------------------
-        # Creación de redes neuronal:
-        # - q_red: red principal que aprende
-        # - q_red_objetivo: copia fija actualizada cada N episodios
-        # Esto evita oscilaciones inestables.
-        # ---------------------------------------------------------
-        self.q_red = DQN(self.num_acciones)
-        self.q_red_objetivo = DQN(self.num_acciones)
+        # -----------------------------------------------------
+        # Selección de arquitectura sin romper DQN/DoubleDQN
+        # -----------------------------------------------------
+        ModeloQ = DuelingDQN if USAR_DUELING_DQN else DQN
+
+        self.q_red = ModeloQ(self.num_acciones)
+        self.q_red_objetivo = ModeloQ(self.num_acciones)
         self.actualizar_red_objetivo()
 
-        # Optimizador Adam
+        # Optimizador
         self.optim = optim.Adam(self.q_red.parameters(), lr=LR)
 
     # =========================================================
-    # SELECCIÓN DE ACCIÓN: política ε-greedy
-    # ---------------------------------------------------------
-    # Si random < ε → exploración (acción aleatoria)
-    # Si random ≥ ε → explotación (acción que maximiza Q)
+    # POLÍTICA ε-GREEDY
     # =========================================================
 
     def seleccionar_accion(self, estado):
         """
-        Recibe: estado con shape (STATE_STACK, 96, 96)
-        Devuelve: una de las 12 acciones del action_space.
+        Selecciona una acción usando política ε-greedy.
+
+        - Exploración: acción aleatoria
+        - Explotación: argmax Q(s, a) usando la red online
         """
 
-        # Exploración aleatoria
         if random.random() < self.epsilon:
             return random.choice(self.action_space)
 
-        # Explotación: elegir la mejor acción según la red
-        estado_t = torch.tensor(estado, dtype=torch.float32).unsqueeze(0)
-        q_vals = self.q_red(estado_t)          # obtener valores Q
-        action_idx = torch.argmax(q_vals).item()
+        estado_t = torch.tensor(
+            estado, dtype=torch.float32
+        ).unsqueeze(0)
+
+        with torch.no_grad():
+            q_vals = self.q_red(estado_t)
+            action_idx = torch.argmax(q_vals).item()
 
         return self.action_space[action_idx]
 
     # =========================================================
-    # REPLAY BUFFER: guardar transiciones
+    # REPLAY BUFFER
     # =========================================================
 
     def memorize(self, state, action, reward, next_state, done):
         """
-        Guardamos el índice de la acción (no la tupla completa) para que la
-        transición quede compacta y sea fácil de almacenar/muestrear.
+        Guarda una transición en el replay buffer.
+
+        Se almacena el índice de la acción para optimizar memoria.
         """
         action_index = self.action_space.index(action)
-        self.memoria.append((state, action_index, reward, next_state, done))
+        self.memoria.append(
+            (state, action_index, reward, next_state, done)
+        )
 
     # =========================================================
-    # ENTRENAMIENTO (Mini-batch Replay)
-    # ---------------------------------------------------------
-    # Implementa la ecuación de Bellman:
-    #
-    # Q(s,a) ← r + γ * max(Q(s', a'))
-    #
-    # Ahora:
-    #   - actualiza la red
-    #   - aplica epsilon decay
-    #   - DEVUELVE el valor del loss (float) para logging
+    # ENTRENAMIENTO (DQN / DOUBLE DQN / DUELING)
     # =========================================================
 
     def replay(self, batch_size):
         """
-        Ejecuta un paso de entrenamiento DQN sobre un mini-batch.
+        Ejecuta un paso de entrenamiento usando Experience Replay.
 
         Devuelve:
-            - loss.item() (float) si se entrenó
-            - None si no había suficientes muestras en memoria
+            - loss (float) si se entrenó
+            - None si no hay suficientes muestras
         """
 
-        # Si no hay suficientes muestras, no entrenamos
         if len(self.memoria) < batch_size:
             return None
 
-        # Selección aleatoria del batch
         minibatch = random.sample(self.memoria, batch_size)
-
         estados, acciones, recompensas, estados_sig, dones = zip(*minibatch)
-
 
         estados = torch.tensor(np.array(estados), dtype=torch.float32)
         estados_sig = torch.tensor(np.array(estados_sig), dtype=torch.float32)
-        acciones = torch.tensor(acciones)
+        acciones = torch.tensor(acciones, dtype=torch.long)
         recompensas = torch.tensor(recompensas, dtype=torch.float32)
         dones = torch.tensor(dones, dtype=torch.float32)
 
-        # ---------------------------------------------------------
-        # Q_pred = Q(s,a) usando q_red
-        # gather permite seleccionar la columna correspondiente
-        # a cada acción del batch.
-        # ---------------------------------------------------------
-        pred = self.q_red(estados)
-        q_pred = pred.gather(1, acciones.unsqueeze(1)).squeeze(1)
+        # Q(s,a) predicho por la red online
+        q_pred = self.q_red(estados).gather(
+            1, acciones.unsqueeze(1)
+        ).squeeze(1)
 
-        # ---------------------------------------------------------
-        # Q_target = r + γ * max(Q(s',a')) usando red objetivo
-        # Si done = True, no hay recompensa futura.
-        # ---------------------------------------------------------
+        # -----------------------------------------------------
+        # TARGET: DQN vs DOUBLE DQN (compatible con Dueling)
+        # -----------------------------------------------------
         with torch.no_grad():
-            q_next = self.q_red_objetivo(estados_sig).max(1)[0]
+
+            if USAR_DOUBLE_DQN:
+                # 1) La red online selecciona la acción
+                acciones_online = self.q_red(estados_sig).argmax(1)
+
+                # 2) La red objetivo evalúa esa acción
+                q_next = self.q_red_objetivo(estados_sig).gather(
+                    1, acciones_online.unsqueeze(1)
+                ).squeeze(1)
+            else:
+                # DQN clásico:
+                q_next = self.q_red_objetivo(estados_sig).max(1)[0]
+
             q_target = recompensas + self.gamma * q_next * (1 - dones)
 
-        # Cálculo de pérdida (MSE)
+        # Función de pérdida (MSE)
         loss = nn.MSELoss()(q_pred, q_target)
 
         # Backpropagation
@@ -246,24 +269,23 @@ class AgenteDQN:
         loss.backward()
         self.optim.step()
 
-        # ---------------------------------------------------------
-        # Decaimiento del epsilon (menos exploración en el tiempo)
-        # ---------------------------------------------------------
+        # Decaimiento de epsilon
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
 
-        # Devuelve el valor escalar del loss para logging y gráficos
         return float(loss.item())
 
     # =========================================================
     # ACTUALIZAR RED OBJETIVO
-    # ---------------------------------------------------------
-    # Se copia la red principal a la red objetivo.
-    # Esto estabiliza el entrenamiento.
     # =========================================================
 
     def actualizar_red_objetivo(self):
-        self.q_red_objetivo.load_state_dict(self.q_red.state_dict())
+        """
+        Copia los pesos de la red online a la red objetivo.
+        """
+        self.q_red_objetivo.load_state_dict(
+            self.q_red.state_dict()
+        )
 
     # =========================================================
     # GUARDAR / CARGAR MODELO
@@ -271,13 +293,17 @@ class AgenteDQN:
 
     def save(self, ruta):
         """
-        Guarda únicamente los pesos (state_dict) de q_red.
+        Guarda los pesos de la red online.
         """
         torch.save(self.q_red.state_dict(), ruta)
 
     def load(self, ruta):
         """
-        Carga el modelo y sincroniza la red objetivo.
+        Carga los pesos del modelo y sincroniza la red objetivo.
+
+        Ojo:
+        Si el modelo fue entrenado con otra arquitectura
+        (DQN vs DuelingDQN), el state_dict no va a coincidir.
         """
         self.q_red.load_state_dict(torch.load(ruta))
         self.actualizar_red_objetivo()

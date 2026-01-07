@@ -23,7 +23,7 @@ Grupo: 4
 
 El reporte completo del proyecto está en el cuaderno de Jupyter, donde se muestran los resultados ya corridos (gráficas, tablas de métricas y conclusiones):
 
-- [notebooks/entrenamiento_y_resultados.ipynb](notebooks/entrenamiento_y_resultados.ipynb)
+- [notebooks/entrenamiento_y_resultados.ipynb](notebooks/entrenamiento_y_resultados_exparcial.ipynb)
 
 ## Estructura del Proyecto
 

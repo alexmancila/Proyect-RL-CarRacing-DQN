@@ -1,0 +1,19 @@
+[2026-01-06 19:30:47,900] [INFO] Carpeta creada: resultados/eval_200_dueling_double_dqn_20260106_193047
+[2026-01-06 19:30:47,901] [INFO] =========== INICIO DE EVALUACIÓN ===========
+[2026-01-06 19:30:47,901] [INFO] Modelo: resultados/experimento_1000ep_dueling_double_dqn/modelos/modelo_ep_200.pth
+[2026-01-06 19:30:47,902] [INFO] Episodios: 5
+[2026-01-06 19:30:47,902] [INFO] GIF: True
+[2026-01-06 19:30:47,902] [INFO] Semilla fija: 123
+[2026-01-06 19:30:47,902] [INFO] Arquitectura detectada: Double Dueling DQN
+[2026-01-06 19:30:47,902] [INFO] [ENTORNO] Creando CarRacing-v3 | render_mode='rgb_array' | continuous=True | domain_randomize=False
+[2026-01-06 19:30:48,569] [INFO] Configuracion aplicada (cfg): Double Dueling DQN
+[2026-01-06 19:31:04,999] [INFO] Episodio 1/5 | Reward=463.14 | Frames=1000
+[2026-01-06 19:31:22,149] [INFO] Episodio 2/5 | Reward=358.08 | Frames=1000
+[2026-01-06 19:31:39,103] [INFO] Episodio 3/5 | Reward=387.39 | Frames=1000
+[2026-01-06 19:31:43,720] [INFO] Episodio 4/5 | Reward=46.63 | Frames=271
+[2026-01-06 19:31:59,638] [INFO] Episodio 5/5 | Reward=59.01 | Frames=1000
+[2026-01-06 19:31:59,638] [INFO] CSV generado: resultados/eval_200_dueling_double_dqn_20260106_193047/metricas.csv
+[2026-01-06 19:31:59,639] [INFO] Resumen | Avg=262.85 | Std=174.93 | Max=463.14
+[2026-01-06 19:32:00,157] [INFO] Gráfico guardado: resultados/eval_200_dueling_double_dqn_20260106_193047/grafico_rewards.png
+[2026-01-06 19:35:21,895] [INFO] GIF generado: resultados/eval_200_dueling_double_dqn_20260106_193047/mejor_episodio.gif
+[2026-01-06 19:35:21,896] [INFO] =========== FIN DE EVALUACIÓN ===========

@@ -6,9 +6,10 @@ Versión final, limpia y defendible en clase.
 
 Incluye:
 ✔ Evaluación determinista (epsilon = 0)
-✔ Registro de métricas
+✔ Semilla fija para reproducibilidad
+✔ Registro de métricas y resumen estadístico
 ✔ Gráfico de rewards
-✔ GIF grande, nítido y reproducible
+✔ GIF grande, nítido y reproducible (mejor episodio)
 ✔ Estructura profesional de resultados
 ====================================================================
 """
@@ -19,11 +20,14 @@ import imageio
 import csv
 import os
 import logging
+import random
 from datetime import datetime
 import cv2
+import torch
+import importlib
 
+import src.configuracion as cfg
 from src.entorno import crear_entorno
-from src.agente import AgenteDQN
 from src.preprocesamiento import (
     generar_stack_inicial,
     actualizar_stack,
@@ -40,12 +44,13 @@ ACTION_SPACE = [
     (-1, 0, 0),   (0, 0, 0),   (1, 0, 0)
 ]
 
-GIF_SCALE = 6
-GIF_FPS = 20
+GIF_SCALE = 4
+GIF_FPS = 15
 
 
-
-# Preparar carpeta de resultados
+# ---------------------------------------------------------
+# Preparar carpeta de resultados y logging
+# ---------------------------------------------------------
 def preparar_carpeta_resultados(nombre_exp):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     carpeta = f"resultados/{nombre_exp}_{timestamp}"
@@ -64,18 +69,67 @@ def preparar_carpeta_resultados(nombre_exp):
     return carpeta
 
 
-# Evaluación principal
+def _cargar_agente_con_flags(action_space, usar_double, usar_dueling):
+    """
+    Fuerza flags globales y recarga el módulo src.agente para que
+    NO se quede con valores antiguos importados como constantes.
+    """
+    cfg.USAR_DOUBLE_DQN = usar_double
+    cfg.USAR_DUELING_DQN = usar_dueling
+
+    # Importar y recargar agente DESPUÉS de setear cfg
+    import src.agente as agente_mod
+    importlib.reload(agente_mod)
+
+    # Crear agente desde el módulo recargado
+    agente = agente_mod.AgenteDQN(action_space=action_space)
+    return agente
+
+
+# ---------------------------------------------------------
+# Evaluación principal (sin aprendizaje, ε = 0)
+# ---------------------------------------------------------
 def evaluar_modelo(path_modelo, episodios, grabar_gif, nombre_exp):
     carpeta = preparar_carpeta_resultados(nombre_exp)
+
+    # ------------------ SEMILLA FIJA ------------------
+    SEED = 123
+    random.seed(SEED)
+    np.random.seed(SEED)
+    torch.manual_seed(SEED)
+
+    # ------------------ Detectar arquitectura por nombre del path ------------------
+    path_lower = path_modelo.lower()
+    usar_dueling = "dueling" in path_lower
+    usar_double = "double" in path_lower
 
     logging.info("=========== INICIO DE EVALUACIÓN ===========")
     logging.info(f"Modelo: {path_modelo}")
     logging.info(f"Episodios: {episodios}")
     logging.info(f"GIF: {grabar_gif}")
+    logging.info(f"Semilla fija: {SEED}")
+    logging.info(
+        f"Arquitectura detectada: "
+        f"{'Double ' if usar_double else ''}"
+        f"{'Dueling ' if usar_dueling else ''}"
+        f"DQN"
+    )
 
     env = crear_entorno()
 
-    agente = AgenteDQN(action_space=ACTION_SPACE)
+    # ------------------ Agente (con flags correctos) ------------------
+    agente = _cargar_agente_con_flags(
+        action_space=ACTION_SPACE,
+        usar_double=usar_double,
+        usar_dueling=usar_dueling
+    )
+    logging.info(
+        f"Configuracion aplicada (cfg): "
+        f"{'Double ' if cfg.USAR_DOUBLE_DQN else ''}"
+        f"{'Dueling ' if cfg.USAR_DUELING_DQN else ''}"
+        f"DQN"
+    )
+
     agente.epsilon = 0.0
     agente.load(path_modelo)
 
@@ -83,12 +137,15 @@ def evaluar_modelo(path_modelo, episodios, grabar_gif, nombre_exp):
     mejor_reward = -1e9
     frames_mejor = []
 
+    GRABAR_SOLO_MEJOR = grabar_gif
+
+    # ------------------ Loop de evaluación ------------------
     for ep in range(1, episodios + 1):
         obs, _ = env.reset()
         stack = generar_stack_inicial(obs)
 
         reward_total = 0
-        frames_ep = []
+        frames_ep = [] if GRABAR_SOLO_MEJOR else None
         done = False
         t = 0
 
@@ -103,10 +160,8 @@ def evaluar_modelo(path_modelo, episodios, grabar_gif, nombre_exp):
             done = terminated or truncated
             reward_total += reward
 
-            # ------------------ FRAME REAL DEL ENTORNO ------------------
-            if grabar_gif:
-                frame_rgb = env.render()  # ESTE es el frame bueno
-
+            if GRABAR_SOLO_MEJOR:
+                frame_rgb = env.render()
                 if frame_rgb.dtype != np.uint8:
                     frame_rgb = (frame_rgb * 255).astype(np.uint8)
 
@@ -118,9 +173,7 @@ def evaluar_modelo(path_modelo, episodios, grabar_gif, nombre_exp):
                     ),
                     interpolation=cv2.INTER_NEAREST
                 )
-
                 frames_ep.append(frame_rgb)
-            # ------------------------------------------------------------
 
             stack = actualizar_stack(stack, obs)
             t += 1
@@ -137,8 +190,7 @@ def evaluar_modelo(path_modelo, episodios, grabar_gif, nombre_exp):
 
     env.close()
 
-
-    # genera CSV
+    # ------------------ CSV ------------------
     csv_path = f"{carpeta}/metricas.csv"
     with open(csv_path, "w", newline="") as f:
         writer = csv.writer(f)
@@ -147,26 +199,29 @@ def evaluar_modelo(path_modelo, episodios, grabar_gif, nombre_exp):
 
     logging.info(f"CSV generado: {csv_path}")
 
+    # ------------------ Resumen ------------------
+    rewards = [r[1] for r in resultados]
+    logging.info(
+        f"Resumen | Avg={np.mean(rewards):.2f} | "
+        f"Std={np.std(rewards):.2f} | "
+        f"Max={np.max(rewards):.2f}"
+    )
 
-    # Graficos
+    # ------------------ Gráfico ------------------
     graficar_resultados(resultados, carpeta)
 
-    # GIF FINAL
+    # ------------------ GIF ------------------
     if grabar_gif and frames_mejor:
         gif_path = f"{carpeta}/mejor_episodio.gif"
-        imageio.mimsave(
-            gif_path,
-            frames_mejor,
-            fps=GIF_FPS,
-            loop=0
-        )
+        imageio.mimsave(gif_path, frames_mejor, fps=GIF_FPS, loop=0)
         logging.info(f"GIF generado: {gif_path}")
 
     logging.info("=========== FIN DE EVALUACIÓN ===========")
 
 
-
+# ---------------------------------------------------------
 # Gráfico de rewards
+# ---------------------------------------------------------
 def graficar_resultados(resultados, carpeta):
     import matplotlib.pyplot as plt
 
@@ -177,8 +232,9 @@ def graficar_resultados(resultados, carpeta):
 
     plt.figure(figsize=(10, 6))
     plt.plot(episodios, rewards, label="Reward por episodio", alpha=0.7)
-    plt.plot(episodios[4:], mov_avg, label="Promedio móvil (5)", linewidth=3)
-    plt.title("Evaluación del Modelo DQN — CarRacing-v3")
+    if len(episodios) >= 5:
+        plt.plot(episodios[4:], mov_avg, label="Promedio móvil (5)", linewidth=3)
+    plt.title("Evaluación del Modelo — CarRacing-v3")
     plt.xlabel("Episodio")
     plt.ylabel("Reward")
     plt.grid(True)
@@ -191,13 +247,15 @@ def graficar_resultados(resultados, carpeta):
     logging.info(f"Gráfico guardado: {path}")
 
 
-
+# ---------------------------------------------------------
+# Entrada por línea de comandos
+# ---------------------------------------------------------
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Evaluación del modelo DQN (CarRacing-v3)"
+        description="Evaluación del modelo entrenado (CarRacing-v3)"
     )
 
-    parser.add_argument("-m", "--model", required=True, help="Ruta al modelo .pth")
+    parser.add_argument("-m", "--model", required=True)
     parser.add_argument("-e", "--episodes", type=int, default=3)
     parser.add_argument("--gif", action="store_true")
     parser.add_argument("--exp", type=str, default="evaluacion")

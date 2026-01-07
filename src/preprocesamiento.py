@@ -3,16 +3,17 @@
 # -------------------------------------------------------------
 # Este módulo transforma las imágenes crudas del entorno en
 # representaciones compactas y útiles para la red neuronal DQN.
-# El enfoque (grises + normalización + stack de 4 frames) sigue el pipeline
-# típico usado en DQN con entradas visuales (estilo Atari):
+#
+# El enfoque (grises + normalización + stack de frames) sigue el
+# pipeline clásico usado en DQN con entradas visuales (estilo Atari):
 #   - Mnih et al. (2013): https://arxiv.org/abs/1312.5602
 #   - Mnih et al. (2015): https://doi.org/10.1038/nature14236
 #
 # Las operaciones realizadas buscan:
 #   1) reducir la dimensionalidad de la imagen
 #   2) eliminar información irrelevante (color)
-#   3) normalizar la intensidad para mejorar la estabilidad
-#   4) capturar el movimiento mediante un "stack" de frames
+#   3) normalizar la intensidad para mejorar la estabilidad numérica
+#   4) capturar el movimiento mediante un "stack" temporal de frames
 #
 # =============================================================
 
@@ -23,79 +24,93 @@ from collections import deque
 from src.configuracion import STATE_STACK
 
 
-
-# Procesar un frame individual
+# =============================================================
+# PROCESAR UN FRAME INDIVIDUAL
+# =============================================================
 def process_state_image(frame):
     """
     Recibe:
         frame → imagen RGB de Gymnasium con shape (H, W, 3)
 
     Devuelve:
-        imagen procesada con shape (96, 96) en escala de grises,
-        tipo float32, valores normalizados entre [0, 1].
+        imagen procesada con shape (96, 96),
+        escala de grises, tipo float32,
+        valores normalizados en el rango [0, 1].
 
-    Este formato es ideal para la red convolucional del agente.
+    Este formato es ideal para la red convolucional del agente DQN.
     """
 
-    logging.debug("Procesando frame: grises, resize y normalización.")
+    logging.debug("Procesando frame: conversión a grises y normalización.")
 
-    # Gymnasium entrega frames en RGB. OpenCV trabaja en BGR por defecto.
-    # Aquí convertimos a grises (el objetivo es eliminar color y simplificar).
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    # Protección defensiva: en casos raros el entorno puede devolver None
+    if frame is None:
+        logging.warning("Frame nulo recibido del entorno. Se retorna frame vacío.")
+        return np.zeros((96, 96), dtype=np.float32)
 
-    # Redimensionar a 96×96 (tamaño de entrada del modelo)
+    # Gymnasium entrega frames en formato RGB.
+    # OpenCV trabaja internamente en BGR, por lo que se debe
+    # especificar explícitamente la conversión correcta.
+    gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+
+    # El entorno CarRacing-v3 ya entrega imágenes de 96×96.
+    # Se mantiene el resize explícito como medida defensiva ante
+    # posibles cambios futuros en la resolución del entorno.
     resized = cv2.resize(gray, (96, 96))
 
-    # Normalización para mejorar la estabilidad numérica
+    # Normalización para mejorar estabilidad numérica durante el entrenamiento
     return resized.astype(np.float32) / 255.0
 
 
-# Crear el stack inicial de frames
-
-
+# =============================================================
+# CREAR STACK INICIAL DE FRAMES
+# =============================================================
 def generar_stack_inicial(frame):
     """
     Crea el primer estado completo del episodio.
 
-    - Procesa el frame inicial.
-    - Crea un deque con STATE_STACK copias de ese frame.
-    - El deque permite desplazar el stack como una ventana deslizante.
+    Procedimiento:
+        - Procesa el frame inicial.
+        - Duplica el frame procesado STATE_STACK veces.
+        - Almacena los frames en un deque con ventana deslizante.
 
-    Esto modela correctamente una observación temporal.
+    Esto permite modelar correctamente un estado temporal desde
+    el primer paso del episodio.
     """
 
-    logging.debug("Generando stack inicial de frames...")
+    logging.debug("Generando stack inicial de frames.")
 
     procesado = process_state_image(frame)
 
-
-    return deque([procesado] * STATE_STACK, maxlen=STATE_STACK)
-
-
-
-# Actualizar el stack con un nuevo frame
+    return deque(
+        [procesado] * STATE_STACK,
+        maxlen=STATE_STACK
+    )
 
 
+# =============================================================
+# ACTUALIZAR STACK TEMPORAL
+# =============================================================
 def actualizar_stack(stack, frame):
     """
-    Desplaza la ventana temporal añadiendo el nuevo frame.
+    Actualiza el stack temporal añadiendo un nuevo frame procesado.
 
-    stack → deque existente con STATE_STACK imágenes
-    frame → nuevo frame del entorno
+    Parámetros:
+        stack → deque existente con STATE_STACK frames
+        frame → nuevo frame crudo del entorno
 
     Devuelve:
-        stack actualizado
+        stack actualizado (ventana temporal desplazada)
     """
-    logging.debug("Actualizando stack con un nuevo frame procesado.")
+
+    logging.debug("Actualizando stack con nuevo frame procesado.")
 
     stack.append(process_state_image(frame))
     return stack
 
 
-
-# Convertir el stack en un tensor (stack, H, W)
-
-
+# =============================================================
+# CONVERTIR STACK A TENSOR DE ESTADO
+# =============================================================
 def generar_state_frame_stack_from_queue(queue):
     """
     Convierte un deque de frames en un tensor NumPy con shape:
@@ -103,13 +118,13 @@ def generar_state_frame_stack_from_queue(queue):
         (STATE_STACK, 96, 96)
 
     donde:
-        - STATE_STACK   → dimensión temporal
-        - 96, 96        → dimensiones espaciales de la imagen
+        - STATE_STACK → dimensión temporal
+        - 96×96       → dimensiones espaciales de la imagen
 
-    Este tensor es la representación final del "estado" que
-    el agente recibe para decidir acciones.
+    Este tensor representa el estado final que se entrega
+    al agente para la toma de decisiones.
     """
 
-    logging.debug("Convirtiendo deque a tensor de estado (stack,96,96).")
+    logging.debug("Convirtiendo stack de frames a tensor NumPy.")
 
     return np.stack(queue, axis=0)
