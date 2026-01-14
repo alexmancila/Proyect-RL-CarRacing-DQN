@@ -1,0 +1,248 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+% Spanish and encoding
+\usepackage[spanish,es-lcroman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% Math, tables, figures
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+
+% Links
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+\begin{document}
+
+% ===== Portada (formato de entrega) =====
+\hypersetup{pageanchor=false}
+\begin{titlepage}
+    \centering
+    {\scshape\Large UNIVERSIDAD NACIONAL DE INGENIERÍA \par}
+    {\scshape\large Facultad de Ingeniería Industrial y de Sistemas \par}
+    {\scshape\large Unidad de Posgrado \par}
+    {\scshape\large Maestría en Inteligencia Artificial \par}
+    \vspace{1.0cm}
+    \includegraphics[width=0.30\textwidth]{figuras/logo.png}\par\vspace{1cm}
+
+    {\Huge\bfseries Trabajo Final \par}
+    \vspace{0.75cm}
+    {\large Artículo de Investigación \par}
+    \vspace{0.5cm}
+    {\large\bfseries Aprendizaje por refuerzo profundo para CarRacing-v3 \par}
+    \vspace{0.75cm}
+
+    {\large \textbf{Curso}: Aprendizaje por Refuerzo \par}
+    \vspace{1.25cm}
+    {\large\bfseries Grupo 4: \par}
+    \vspace{0.5cm}
+    {\large Koc Góngora, Luis Enrique \par}
+    {\large Mancilla Antaya, Alex Felipe \par}
+    {\large Meléndez García, Herbert Antonio \par}
+    {\large Paitán Cano, Dennis Jack \par}
+     \vspace{0.75cm}
+    {\large \textbf{Docente}: María Tejada Begazo \par}
+    \vfill
+    {\large 14 de enero de 2026 \par}
+\end{titlepage}
+
+\hypersetup{pageanchor=true}
+
+\title{Aprendizaje por refuerzo profundo para CarRacing-v3 con DQN y variantes\thanks{Este trabajo se desarrolla como trabajo final del curso de \textit{Aprendizaje por Refuerzo}, como pare de la maestría en Inteligencia Artifical de la Universidad Nacional de Ingeniería (Perú).}}
+
+\author{
+\IEEEauthorblockN{Luis Koc, Alex Mancilla, Herbert Meléndez, Dennis Jack Paitán}
+\IEEEauthorblockA{Unidad de Posgrado, Universidad Nacional de Ingeniería (UNI)\\
+\texttt{luis.koc@gmail.com\qquad amancillaa@uni.pe}\\
+\texttt{hamg.94@gmail.com\qquad dennis.paitan.c@uni.pe}}
+}
+
+\maketitle
+
+\begin{abstract}
+Se implementa y evalúa un agente de aprendizaje por refuerzo profundo para el entorno visual \textit{CarRacing-v3} de Gymnasium, donde el agente aprende a conducir usando únicamente observaciones RGB de $96\times 96$ píxeles. Se compara DQN \cite{mnih2015human} con dos extensiones ampliamente adoptadas para estabilizar el aprendizaje y mejorar el desempeño: Double DQN \cite{vanhasselt2016double} (para reducir sobreestimación) y Dueling DQN \cite{wang2016dueling} (para descomponer el valor del estado y la ventaja de la acción).
+
+Para adaptar CarRacing (acciones continuas) a DQN (acciones discretas), se discretiza el control \mbox{(steer, gas, brake)} en 12 acciones fijas, siguiendo la especificación del entorno \cite{gymnasium_carracing}. El estado se preprocesa con conversión a escala de grises, normalización y apilamiento de 4 frames (frame stacking) para capturar dinámica temporal, siguiendo el esquema de DQN con entradas visuales \cite{mnih2015human}.
+
+Los resultados se reportan mediante evaluación sin exploración ($\epsilon=0$) en 5 episodios, y se presentan tablas y gráficos de entrenamiento/evaluación generados automáticamente por el proyecto. En las corridas evaluadas, Double DQN alcanzó el mayor retorno promedio a 1000 episodios, mientras que a 200 episodios los retornos fueron más variables, evidenciando sensibilidad a la etapa de entrenamiento y a la varianza del entorno.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Aprendizaje por refuerzo, Deep Q-Network (DQN), Double DQN, Dueling DQN, CarRacing-v3, Gymnasium, PyTorch.
+\end{IEEEkeywords}
+
+\section{Introducción}
+El aprendizaje por refuerzo (RL) estudia agentes que aprenden políticas a partir de interacción con un entorno, maximizando una recompensa acumulada \cite{sutton2018reinforcement}. En problemas de control a partir de percepción visual, el uso de redes convolucionales para aproximar funciones de valor permitió escalar RL a entradas de alta dimensión \cite{mnih2015human}.
+
+En este trabajo se aborda el entorno \textit{CarRacing-v3} \cite{gymnasium_carracing}, un problema de control continuo con observaciones visuales y dinámica física basada en Box2D \cite{box2d}. La motivación es evaluar, en un entorno visual no trivial, el impacto de mejoras conocidas sobre DQN: Double DQN \cite{vanhasselt2016double} y Dueling DQN \cite{wang2016dueling}, comparando también con el DQN base \cite{mnih2015human}. Además, se busca asegurar reproducibilidad a partir del repositorio, el \textit{README} y el cuaderno final de resultados.
+
+\textbf{Objetivos:} (i) entrenar agentes DQN y variantes en CarRacing-v3; (ii) registrar métricas y gráficos de entrenamiento; (iii) evaluar los modelos sin exploración y comparar retornos con tablas/figuras reproducibles.
+
+\section{Problema y motivación}
+CarRacing-v3 requiere aprender una política de conducción que mantenga el vehículo en la pista y progrese sobre la ruta usando únicamente visión \cite{gymnasium_carracing}. La alta dimensionalidad de la observación, la dinámica continua y la necesidad de exploración hacen que el problema sea un caso representativo de RL profundo \cite{sutton2018reinforcement, mnih2015human}.
+
+La motivación práctica es estudiar la estabilidad del entrenamiento con recursos limitados (CPU y entrenamiento sin renderizado) y comprender qué variante de DQN ofrece mejor compromiso entre complejidad y desempeño, manteniendo una implementación controlada.
+
+\section{Metodología}
+\subsection{Entorno}
+Se utiliza Gymnasium \cite{gymnasium} con el entorno \textit{CarRacing-v3} \cite{gymnasium_carracing}. La observación es una imagen RGB $96\times 96$, y la acción original es continua. El motor físico es Box2D \cite{box2d}.
+
+\subsection{Discretización del espacio de acciones}
+DQN asume un espacio de acciones discreto \cite{mnih2015human}. Por ello, se discretiza el control continuo \mbox{(steer, gas, brake)} en 12 acciones predefinidas (combinaciones de giro $\in\{-1,0,1\}$, aceleración $\in\{0,1\}$ y freno $\in\{0,0.2\}$), alineadas con el diseño documentado del entorno \cite{gymnasium_carracing}.
+
+\subsection{Preprocesamiento y estado}
+Cada frame se convierte a escala de grises y se normaliza a $[0,1]$ usando OpenCV \cite{bradski2000opencv}. Se apilan 4 frames consecutivos (frame stacking) para capturar velocidad/movimiento de forma implícita, práctica estándar en DQN con entradas visuales \cite{mnih2015human}. El estado final tiene forma $(4,96,96)$.
+
+\subsection{Modelos: DQN, Double DQN y Dueling DQN}
+Se implementa un aproximador $Q_\theta(s,a)$ con una CNN sencilla (2 capas convolucionales + MLP). El entrenamiento usa \textit{experience replay} \cite{lin1992replay} y política $\epsilon$-greedy \cite{sutton2018reinforcement}.
+
+\textbf{DQN:} el objetivo temporal (target) usa la red objetivo $Q_{\theta^-}$ \cite{mnih2015human}.\\
+\textbf{Double DQN:} selecciona la acción con la red online y la evalúa con la red objetivo para reducir sobreestimación \cite{vanhasselt2016double}.\\
+\textbf{Dueling DQN:} descompone $Q(s,a)=V(s)+A(s,a)$ para aprender valor del estado y ventaja de acción \cite{wang2016dueling}.\\
+Las variantes se activan con banderas de configuración (Double/Dueling) y pueden combinarse (Dueling Double DQN).
+
+\subsection{Entrenamiento}
+El optimizador usado es Adam \cite{kingma2015adam}. Se entrena por episodios, con red objetivo actualizada periódicamente (cada 5 episodios) y guardado de checkpoints. Para acelerar entrenamiento, se aplica \textit{frame skipping} \cite{mnih2015human} con \texttt{SKIP\_FRAMES=2}.
+
+\section{Diseño experimental}
+\subsection{Configuración}
+Se entrenan agentes por 1000 episodios (cuando aplica), registrando por episodio: reward acumulado, $\epsilon$, tamaño del buffer y loss promedio. La evaluación se realiza con $\epsilon=0$ por 5 episodios, guardando un CSV con el retorno total por episodio y un gráfico de retornos. El repositorio y el cuaderno de resultados documentan el flujo de entrenamiento y evaluación (Jupyter \cite{kluyver2016jupyter}).
+
+\subsection{Métrica}
+La métrica principal es el retorno total por episodio (reward acumulado), reportado como media y desviación estándar poblacional (\emph{ddof}=0) sobre 5 episodios. Este reporte sigue el resumen implementado en el cuaderno final.
+
+\section{Resultados}
+\subsection{Resumen cuantitativo}
+La Tabla~\ref{tab:eval_200} y Tabla~\ref{tab:eval_1000} resumen las evaluaciones (5 episodios). Se reporta también cuántos episodios alcanzaron 1000 frames, ya que algunos episodios pueden terminar antes (por truncamiento/condición de fin del entorno) \cite{gymnasium_carracing}.
+
+\begin{table}[!t]
+\caption{Evaluación a 200 episodios (5 episodios, $\epsilon=0$)}
+\label{tab:eval_200}
+\centering
+\begin{tabular}{lrrrrrr}
+\toprule
+Algoritmo & Mean & Std & Min & Max & Full & $n$\\
+\midrule
+DQN & 238.85 & 207.06 & 67.24 & 646.67 & 4 & 5\\
+Double DQN & 108.76 & 81.52 & 30.74 & 265.52 & 5 & 5\\
+Dueling Double DQN & 262.85 & 174.93 & 46.63 & 463.14 & 4 & 5\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[!t]
+\caption{Evaluación a 1000 episodios (5 episodios, $\epsilon=0$)}
+\label{tab:eval_1000}
+\centering
+\begin{tabular}{lrrrrrr}
+\toprule
+Algoritmo & Mean & Std & Min & Max & Full & $n$\\
+\midrule
+DQN & 418.58 & 209.95 & 252.73 & 825.09 & 5 & 5\\
+Double DQN & 567.72 & 257.19 & 278.29 & 883.33 & 5 & 5\\
+Dueling Double DQN & 462.46 & 222.57 & 189.76 & 793.47 & 4 & 5\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Gráficos de entrenamiento}
+Las Figuras~\ref{fig:train_double_reward}--\ref{fig:train_dueling_double_reward} muestran la evolución del retorno por episodio durante entrenamiento. Los gráficos se generan automáticamente por el proyecto usando Matplotlib \cite{hunter2007matplotlib}.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{../resultados/experimento_1000ep_double_dqn/grafico_reward.png}
+\caption{Entrenamiento: reward por episodio (Double DQN).}
+\label{fig:train_double_reward}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{../resultados/experimento_1000ep_dqn/grafico_reward.png}
+\caption{Entrenamiento: reward por episodio (DQN).}
+\label{fig:train_dqn_reward}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{../resultados/experimento_1000ep_dueling_double_dqn/grafico_reward.png}
+\caption{Entrenamiento: reward por episodio (Dueling Double DQN).}
+\label{fig:train_dueling_double_reward}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{../resultados/experimento_1000ep_double_dqn/grafico_loss.png}
+\caption{Entrenamiento (Double DQN): loss promedio por episodio.}
+\label{fig:train_double_loss}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{../resultados/experimento_1000ep_double_dqn/grafico_epsilon.png}
+\caption{Entrenamiento (Double DQN): decaimiento de $\epsilon$ (exploración).}
+\label{fig:train_double_epsilon}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{../resultados/experimento_1000ep_double_dqn/grafico_buffer.png}
+\caption{Entrenamiento (Double DQN): tamaño del replay buffer.}
+\label{fig:train_double_buffer}
+\end{figure}
+
+\subsection{Gráficos de evaluación}
+Las Figuras~\ref{fig:eval_1000_double}--\ref{fig:eval_200_dueling_double} muestran los retornos obtenidos en evaluación (5 episodios) para distintos checkpoints. Dado el tamaño muestral pequeño, estas curvas deben interpretarse como evidencia indicativa y no concluyente \cite{sutton2018reinforcement}.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{../resultados/eval_1000_double_dqn/grafico_rewards.png}
+\caption{Evaluación (1000): Double DQN.}
+\label{fig:eval_1000_double}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{../resultados/eval_1000_dqn/grafico_rewards.png}
+\caption{Evaluación (1000): DQN.}
+\label{fig:eval_1000_dqn}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\linewidth]{../resultados/eval_200_dueling_double_dqn/grafico_rewards.png}
+\caption{Evaluación (200): Dueling Double DQN.}
+\label{fig:eval_200_dueling_double}
+\end{figure}
+
+\section{Discusión crítica}
+En las evaluaciones a 1000 episodios, Double DQN obtuvo el mayor retorno promedio (Tabla~\ref{tab:eval_1000}), consistente con su objetivo de reducir sobreestimación en el cálculo de targets \cite{vanhasselt2016double}. Sin embargo, a 200 episodios la variabilidad fue alta y el desempeño relativo cambió (Tabla~\ref{tab:eval_200}), lo cual puede explicarse por (i) alta varianza inherente a RL \cite{sutton2018reinforcement}; (ii) sensibilidad a hiperparámetros y etapa de entrenamiento; y (iii) tamaño de evaluación limitado (5 episodios).
+
+\section{Especificaciones y restricciones de implementación}
+\textbf{Restricciones:} entrenamiento sin render para acelerar (modo \texttt{rgb\_array}); CPU-only como configuración típica; uso de frame skipping y mini-batches para controlar costo computacional.\\
+\textbf{Lenguaje y librerías:} Python \cite{python}, Gymnasium \cite{gymnasium}, PyTorch \cite{paszke2019pytorch}, NumPy \cite{harris2020numpy}, Matplotlib \cite{hunter2007matplotlib}, OpenCV \cite{bradski2000opencv}, pandas \cite{mckinney2010pandas}, ImageIO \cite{imageio} y pygame \cite{pygame}.
+
+\section{Reproducibilidad}
+El repositorio del proyecto es: \url{https://github.com/alexmancila/Proyect-RL-CarRacing-DQN/tree/main}.\\
+La configuración base (por defecto) se encuentra en \texttt{src/configuracion.py}. Para reproducir, se recomienda: (i) instalar dependencias desde \texttt{requirements.txt}; (ii) entrenar con \texttt{python main.py}; (iii) evaluar modelos con los scripts en \texttt{tests/}. La documentación de ejecución y el cuaderno final en Jupyter describen los pasos y rutas de resultados \cite{kluyver2016jupyter}.
+
+\section{Participación y contribuciones}
+\textbf{Koc Góngora, Luis Enrique:} integración y ajustes del pipeline RL, análisis de resultados, documentación técnica.\\
+\textbf{Mancilla Antaya, Alex Felipe:} implementación de variantes (Double/Dueling), soporte en evaluación y automatización.\\
+\textbf{Meléndez García, Herbert Antonio:} elaboración del informe y consolidación de resultados/figuras.\\
+\textbf{Paitán Cano, Dennis Jack:} revisión de experimentos, organización de resultados y discusión crítica.
+
+\section{Transparencia (uso de herramientas)}
+Se utilizó Jupyter Notebook para análisis y reporte de resultados \cite{kluyver2016jupyter}. Para apoyo en redacción y consistencia del documento se empleó asistencia de IA generativa como herramienta editorial; las decisiones técnicas, experimentos y resultados reportados provienen del código y artefactos del repositorio.
+
+\section{Conclusiones y trabajo futuro}
+Se implementó un agente basado en DQN y variantes (Double/Dueling) para CarRacing-v3. Con los resultados disponibles, Double DQN mostró el mejor retorno promedio a 1000 episodios. Como trabajo futuro: (i) aumentar episodios de evaluación y semillas para reducir varianza \cite{sutton2018reinforcement}; (ii) explorar técnicas de mejora de muestreo como \textit{prioritized experience replay} \cite{schaul2016prioritized} y arquitecturas más profundas; (iii) ajustar discretización de acciones o migrar a métodos continuos para control continuo nativo (p.ej., DDPG \cite{lillicrap2016ddpg} o SAC \cite{haarnoja2018sac}).
+
+\bibliographystyle{IEEEtran}
+\bibliography{rl_references}
+
+\end{document}

@@ -29,7 +29,8 @@ from src.configuracion import (
     GAMMA,
     LR,
     TRAINING_BATCH_SIZE,
-    USAR_DOUBLE_DQN
+    USAR_DOUBLE_DQN,
+    USAR_DUELING_DQN
 )
 
 # -----------------------------------------------------------
@@ -183,9 +184,40 @@ if __name__ == "__main__":
     # -------------------------------------------------------
     set_render_mode(args.render == "on")
 
-    # Se diferencia automáticamente el experimento según el algoritmo
-    nombre_algoritmo = "double_dqn" if USAR_DOUBLE_DQN else "dqn"
-    nombre_experimento = f"{args.nombre_exp}_{nombre_algoritmo}"
+    # -------------------------------------------------------
+    # Nombre de experimento (retrocompatible)
+    # -------------------------------------------------------
+    # Se añade un sufijo de algoritmo para diferenciar resultados.
+    # Importante: NO debe romper los resultados ya corridos.
+    #
+    # Reglas:
+    # - Si el usuario ya termina con un sufijo estándar, no se modifica.
+    # - Si el usuario ya incluyó "dueling" en el nombre base, no lo repetimos.
+    #
+    # Sufijos estándar:
+    #   dqn | double_dqn | dueling_dqn | dueling_double_dqn
+    base = args.nombre_exp
+    base_lower = base.lower()
+
+    sufijos_estandar = [
+        "dqn",
+        "double_dqn",
+        "dueling_dqn",
+        "dueling_double_dqn",
+    ]
+
+    if any(base_lower.endswith(s) for s in sufijos_estandar):
+        nombre_experimento = base
+    else:
+        partes = []
+        if USAR_DUELING_DQN and ("dueling" not in base_lower):
+            partes.append("dueling")
+        if USAR_DOUBLE_DQN:
+            partes.append("double")
+        partes.append("dqn")
+
+        sufijo_algoritmo = "_".join(partes)
+        nombre_experimento = f"{base}_{sufijo_algoritmo}"
 
     configurar_logging(nombre_experimento)
 

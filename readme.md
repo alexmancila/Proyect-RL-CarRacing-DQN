@@ -1,83 +1,98 @@
-# Proyecto Aprendizaje por Refuerzo en el entorno CarRacing-v3
-Curso de Aprendizaje por reforzamienbto de la Maestría en Inteligenia artificial de la Universidad de Ingeniería (Lima, 2025-2)
+# Proyecto de Aprendizaje por Refuerzo — CarRacing-v3
+Curso de Aprendizaje por Refuerzo de la Maestría en Inteligencia Artificial de la Universidad Nacional de Ingeniería (Lima, 2025-2)
 
-**Integrantes Grupo 4**:
+**Integrantes (Grupo 4)**
 
 * Koc Góngora, Luis Enrique
 * Mancilla Antaya, Alex Felipe
 * Meléndez García, Herbert Antonio
 * Paitán Cano, Dennis Jack
 
-Este proyecto implementa un agente de **Aprendizaje por Refuerzo** utilizando el algoritmo **DQN** (Deep Q-Network) para aprender a jugar al entorno **CarRacing-v3** proporcionado por **Gymnasium** (Mnih et al., 2015; Farama Foundation, n.d.).
+Este proyecto implementa agentes de **Aprendizaje por Refuerzo** para el entorno **CarRacing-v3** (Gymnasium), usando una familia de algoritmos basados en **Deep Q-Learning** con entrada visual (frames) y *experience replay*.
 
-El flujo principal es:
+Algoritmos soportados en el código:
 
-- Entrenar el agente y guardar métricas/modelos.
-- Evaluar modelos guardados sin exploración (ε = 0).
-- Analizar resultados en el cuaderno.
+- **DQN** (Deep Q-Network)
+- **Double DQN** (reduce sobreestimación de Q)
+- **Dueling DQN** (separa valor/ventaja)
+- **Dueling Double DQN** (combinación)
 
-Curso: Aprendizaje por Refuerzo (MIA-204)
+Flujo típico:
+
+- Entrenar y guardar métricas/modelos.
+- Evaluar modelos guardados sin exploración (ε = 0) y generar GIF.
+- Analizar y comparar resultados en notebooks (incluye tablas/gráficas).
+
+Curso: Aprendizaje por Refuerzo (MIA-204)  
 Grupo: 4
 
-## Reporte (cuaderno con resultados)
+## Reporte (notebooks con resultados)
 
-El reporte completo del proyecto está en el cuaderno de Jupyter, donde se muestran los resultados ya corridos (gráficas, tablas de métricas y conclusiones):
+El reporte final (incluye comparación entre algoritmos y conclusiones) está en:
 
-- [notebooks/entrenamiento_y_resultados.ipynb](notebooks/entrenamiento_y_resultados_exparcial.ipynb)
+- [notebooks/entrenamiento_y_resultados_exfinal.ipynb](notebooks/entrenamiento_y_resultados_exfinal.ipynb)
 
-## Estructura del Proyecto
+El cuaderno parcial previo se mantiene como referencia:
 
-El proyecto está organizado de la siguiente manera:
+- [notebooks/entrenamiento_y_resultados_exparcial.ipynb](notebooks/entrenamiento_y_resultados_exparcial.ipynb)
+
+## Estructura del proyecto (actual)
 
 ```
 Proyect-RL-CarRacing-DQN/
 │
-├── .venv/ # Entorno virtual de Python
+├── enlace_repositorio.txt
+├── main.py
+├── readme.md
+├── requirements.txt
+├── diagrama.png
 │
-├── logs/
-│ └── experimento_1000ep_.log # Logs del entrenamiento
+├── docs/
+│   ├── preguntas_proyecto_rl.pdf
+│   └── respuestas_detalladas_proyecto_rl.pdf
 │
 ├── notebooks/
-│ └── entrenamiento_y_resultados.ipynb
-│ # Análisis gráfico y estadístico del entrenamiento y evaluación
+│   ├── entrenamiento_y_resultados_exfinal.ipynb
+│   └── entrenamiento_y_resultados_exparcial.ipynb
+│
+├── logs/
+│   └── <nombre_experimento>_<timestamp>.log
 │
 ├── resultados/
-│ ├── eval_200/
-│ │ ├── evaluacion.log
-│ │ ├── grafico_rewards.png
-│ │ ├── mejor_episodio.gif
-│ │ └── metricas.csv
-│ │
-│ ├── eval_1000/
-│ │ ├── evaluacion.log
-│ │ ├── grafico_rewards.png
-│ │ ├── mejor_episodio.gif
-│ │ └── metricas.csv
-│ │
-│ └── experimento_1000ep/
-│ ├── modelos/
-│ │ └── modelo_ep_.pth
-│ ├── grafico_loss.png
-│ ├── grafico_reward.png
-│ ├── grafico_epsilon.png
-│ ├── grafico_buffer.png
-│ └── metricas_entrenamiento.csv
+│   ├── experimento_*/
+│   │   ├── metricas_entrenamiento.csv
+│   │   ├── grafico_reward.png
+│   │   ├── grafico_loss.png
+│   │   ├── grafico_epsilon.png
+│   │   ├── grafico_buffer.png
+│   │   └── modelos/
+│   │       ├── modelo_ep_<N>.pth
+│   │       └── modelo_final.pth
+│   │
+│   ├── eval_*/
+│   │   ├── evaluacion.log
+│   │   ├── grafico_rewards.png
+│   │   ├── (opcional) mejor_episodio.gif
+│   │   └── metricas.csv
+│   └── ...
 │
 ├── src/
-│ ├── agente.py # Implementación del agente DQN (PyTorch)
-│ ├── entorno.py # Creación del entorno CarRacing-v3
-│ ├── preprocesamiento.py # Procesamiento de frames y stack de estados
-│ └── configuracion.py # Hiperparámetros y configuración
+│   ├── __init__.py
+│   ├── agente.py
+│   ├── configuracion.py
+│   ├── entorno.py
+│   ├── entrenamiento.py
+│   └── preprocesamiento.py
 │
 ├── tests/
-│ ├── probar_entorno.py # Verificación del entorno
-│ ├── probar_modelo.py # Evaluación automática del modelo
-│ ├── probar_modelo_teclado.py # Control manual del entorno
-│ └── resumen_experimentos.py # Resumen de métricas
+│   ├── probar_entorno.py
+│   ├── probar_modelo.py
+│   ├── probar_modelo_teclado.py
+│   └── resumen_experimentos.py
 │
-├── main.py # Script principal de entrenamiento
-├── requirements.txt
-└── readme.md
+└── tools/
+   ├── generar_pdf_preguntas.py
+   └── generar_pdf_respuestas_detalladas.py
 ```
 
 ## Instalación
@@ -122,6 +137,8 @@ Este proyecto está desarrollado en Python y requiere algunos paquetes y bibliot
 
 ## Ejecución rápida (recomendado)
 
+> Nota: el algoritmo (DQN / Double / Dueling / Dueling Double) se selecciona actualmente desde [src/configuracion.py](src/configuracion.py) mediante flags globales (ver sección “Selección de algoritmo”).
+
 ### Entrenamiento
 
 Entrenar desde cero (por defecto llega a 1000 episodios y guarda checkpoints):
@@ -136,6 +153,26 @@ Entrenar con render (más lento, pero sirve para observar):
 python main.py --render on --nombre-exp experimento_1000ep
 ```
 
+### Selección de algoritmo (DQN / Double / Dueling)
+
+La selección se controla en [src/configuracion.py](src/configuracion.py) con estos flags:
+
+- `USAR_DOUBLE_DQN`
+- `USAR_DUELING_DQN`
+
+Combinaciones soportadas:
+
+| Algoritmo | `USAR_DOUBLE_DQN` | `USAR_DUELING_DQN` |
+|---|---:|---:|
+| DQN | `False` | `False` |
+| Double DQN | `True` | `False` |
+| Dueling DQN | `False` | `True` |
+| Dueling Double DQN | `True` | `True` |
+
+Recomendación práctica para mantener trazabilidad: usa nombres de experimento que incluyan el algoritmo (por ejemplo `experimento_1000ep_dqn`, `experimento_1000ep_double_dqn`, `experimento_1000ep_dueling_double_dqn`). Esto ayuda tanto en el orden de carpetas como en la evaluación (ver siguiente sección).
+
+Nota: [main.py](main.py) añade automáticamente un sufijo estándar según los flags (`dqn`, `double_dqn`, `dueling_dqn`, `dueling_double_dqn`) y evita duplicarlo si ya lo incluiste en `--nombre-exp`. Además, si el nombre base ya contiene `dueling`, no lo repite en el sufijo.
+
 ### Evaluación
 
 Evaluar un modelo guardado (sin exploración) y generar GIF:
@@ -144,7 +181,22 @@ Evaluar un modelo guardado (sin exploración) y generar GIF:
 python tests/probar_modelo.py --model "resultados/experimento_1000ep/modelos/modelo_ep_1000.pth" --episodes 5 --gif --exp eval_1000
 ```
 
+Ejemplos por algoritmo (rutas coherentes con la carpeta `resultados/` del proyecto):
+
+```
+# DQN
+python tests/probar_modelo.py --model "resultados/experimento_1000ep_dqn/modelos/modelo_ep_1000.pth" --episodes 5 --gif --exp eval_1000_dqn
+
+# Double DQN
+python tests/probar_modelo.py --model "resultados/experimento_1000ep_double_dqn/modelos/modelo_ep_1000.pth" --episodes 5 --gif --exp eval_1000_double_dqn
+
+# Dueling Double DQN
+python tests/probar_modelo.py --model "resultados/experimento_1000ep_dueling_double_dqn/modelos/modelo_ep_1000.pth" --episodes 5 --gif --exp eval_1000_dueling_double_dqn
+```
+
 Nota: por defecto el evaluador crea una carpeta con timestamp (por ejemplo `resultados/eval_1000_YYYYMMDD_HHMMSS/`). Si quieres una carpeta fija como `resultados/eval_1000/`, puedes renombrarla después.
+
+Importante: [tests/probar_modelo.py](tests/probar_modelo.py) detecta automáticamente la arquitectura mirando el **nombre del path** del modelo (busca los substrings `"double"` y `"dueling"`). La ruta/carpeta del modelo debe contener esas palabras cuando corresponda para un adetección correcta.
 
 ## Ejecución (detallada)
 
@@ -168,7 +220,14 @@ El código se organiza en módulos separados:
 
 ### `agente.py`
 
-Implementa la clase `AgenteDQN`, que utiliza una red neuronal profunda (DQN) para aprender a jugar al entorno. La red neuronal está basada en **PyTorch**.
+Implementa la clase `AgenteDQN` (PyTorch) con soporte para:
+
+- DQN clásico
+- Double DQN (target con acción seleccionada por la red online)
+- Dueling DQN (cabezas de valor y ventaja)
+- Dueling Double DQN
+
+Nota importante: si cambias `USAR_DUELING_DQN`, no podrás cargar pesos entrenados con otra arquitectura (el `state_dict` no coincide).
 
 ### `entorno.py`
 
@@ -180,15 +239,19 @@ Aquí se encuentran las funciones para procesar los frames del entorno (escala d
 
 ### `configuracion.py`
 
-Contiene los parámetros de configuración globales, como la tasa de descuento `GAMMA`, el tamaño de la memoria `TAMANO_MEMORIA`, y otros hiperparámetros del agente.
+Contiene los parámetros de configuración globales (`GAMMA`, `LR`, `TRAINING_BATCH_SIZE`, etc.) y los flags que activan las variantes del algoritmo (`USAR_DOUBLE_DQN`, `USAR_DUELING_DQN`).
 
 ### `entrenamiento.py`
 
-El script encargado de entrenar el agente utilizando el algoritmo **DQN**. A lo largo del entrenamiento, el agente aprende a tomar decisiones a partir de su experiencia en el entorno.
+El loop de entrenamiento. Soporta DQN/Double/Dueling según flags. Guarda:
+
+- `metricas_entrenamiento.csv`
+- checkpoints en `resultados/<experimento>/modelos/`
+- gráficos (`grafico_reward.png`, `grafico_loss.png`, etc.)
 
 ### `probar_modelo.py`
 
-Este archivo permite cargar un modelo entrenado previamente y evaluarlo en varios episodios para medir su rendimiento.
+Evalúa un modelo entrenado en modo determinista (ε=0), guarda métricas, genera gráfico y (opcionalmente) un GIF del mejor episodio.
 
 ### `probar_entorno.py`
 
@@ -200,11 +263,11 @@ Un script básico para comprobar que el entorno CarRacing-v3 se está cargando c
 
 ## Resultados
 
-Los resultados del proyecto se organizan en la carpeta `resultados`, separando claramente **entrenamiento** y **evaluación**, lo que facilita el análisis y la comparación entre distintos niveles de aprendizaje del agente.
+Los resultados se organizan en la carpeta `resultados/`, separando **entrenamiento** y **evaluación**, lo que facilita el análisis y la comparación entre algoritmos/variantes.
 
 ### Resultados del entrenamiento
 
-En la carpeta `experimento_1000ep/` se almacenan las métricas generadas durante el proceso de entrenamiento del agente DQN, entre ellas:
+En cada carpeta `resultados/experimento_*/` se almacenan las métricas generadas durante el entrenamiento, entre ellas:
 
 - `grafico_reward.png`: evolución de la recompensa a lo largo de los episodios de entrenamiento.
 - `grafico_loss.png`: comportamiento de la función de pérdida durante el aprendizaje.
@@ -216,10 +279,10 @@ Estos archivos permiten analizar cómo el agente fue aprendiendo y estabilizando
 
 ### Resultados de la evaluación
 
-Para evaluar el desempeño del modelo entrenado, se realizaron ejecuciones controladas sin exploración (`epsilon = 0`) en distintos puntos del entrenamiento:
+Para evaluar el desempeño del modelo entrenado, se realizaron ejecuciones controladas sin exploración (`epsilon = 0`) en distintos puntos del entrenamiento y/o para distintas variantes:
 
-- `eval_200/`: evaluación del modelo entrenado con 200 episodios.
-- `eval_1000/`: evaluación del modelo entrenado con 1000 episodios.
+- `eval_200*`: evaluaciones del modelo entrenado con ~200 episodios.
+- `eval_1000*`: evaluaciones del modelo entrenado con ~1000 episodios.
 
 Cada carpeta de evaluación contiene:
 
