@@ -21,12 +21,42 @@
 \providecommand{\BIBdecl}{\relax}
 \BIBdecl
 
+\bibitem{sutton2018reinforcement}
+\BIBentryALTinterwordspacing
+R.~S. Sutton and A.~G. Barto, \emph{Reinforcement Learning: An Introduction},
+  2nd~ed.\hskip 1em plus 0.5em minus 0.4em\relax MIT Press, 2018. [Online].
+  Available: \url{http://incompleteideas.net/book/the-book-2nd.html}
+\BIBentrySTDinterwordspacing
+
 \bibitem{mnih2015human}
+\BIBentryALTinterwordspacing
 V.~Mnih, K.~Kavukcuoglu, D.~Silver, A.~A. Rusu, J.~Veness, M.~G. Bellemare,
   A.~Graves, M.~Riedmiller, A.~K. Fidjeland, G.~Ostrovski, S.~Petersen,
   C.~Beattie, A.~Sadik, I.~Antonoglou, H.~King, D.~Kumaran, D.~Wierstra,
   S.~Legg, and D.~Hassabis, ``Human-level control through deep reinforcement
-  learning,'' \emph{Nature}, vol. 518, no. 7540, pp. 529--533, 2015.
+  learning,'' \emph{Nature}, vol. 518, no. 7540, pp. 529--533, 2015. [Online].
+  Available: \url{https://doi.org/10.1038/nature14236}
+\BIBentrySTDinterwordspacing
+
+\bibitem{gymnasium}
+\BIBentryALTinterwordspacing
+{Farama Foundation}, ``Gymnasium: A standard api for reinforcement learning
+  environments,'' Software, accessed: 2026-01-14. [Online]. Available:
+  \url{https://gymnasium.farama.org/}
+\BIBentrySTDinterwordspacing
+
+\bibitem{gymnasium_carracing}
+\BIBentryALTinterwordspacing
+------, ``Gymnasium carracing-v3 environment documentation,'' Online
+  documentation, accessed: 2026-01-14. [Online]. Available:
+  \url{https://gymnasium.farama.org/environments/box2d/car_racing/}
+\BIBentrySTDinterwordspacing
+
+\bibitem{box2d}
+\BIBentryALTinterwordspacing
+E.~Catto, ``Box2d: A 2d physics engine for games,'' Software, accessed:
+  2026-01-14. [Online]. Available: \url{https://box2d.org/}
+\BIBentrySTDinterwordspacing
 
 \bibitem{vanhasselt2016double}
 \BIBentryALTinterwordspacing
@@ -45,33 +75,6 @@ Z.~Wang, T.~Schaul, M.~Hessel, H.~van Hasselt, M.~Lanctot, and N.~de~Freitas,
   \url{http://proceedings.mlr.press/v48/wangf16.html}
 \BIBentrySTDinterwordspacing
 
-\bibitem{gymnasium_carracing}
-\BIBentryALTinterwordspacing
-{Farama Foundation}, ``Gymnasium carracing-v3 environment documentation,''
-  Online documentation, accessed: 2026-01-14. [Online]. Available:
-  \url{https://gymnasium.farama.org/environments/box2d/car_racing/}
-\BIBentrySTDinterwordspacing
-
-\bibitem{sutton2018reinforcement}
-\BIBentryALTinterwordspacing
-R.~S. Sutton and A.~G. Barto, \emph{Reinforcement Learning: An Introduction},
-  2nd~ed.\hskip 1em plus 0.5em minus 0.4em\relax MIT Press, 2018. [Online].
-  Available: \url{http://incompleteideas.net/book/the-book-2nd.html}
-\BIBentrySTDinterwordspacing
-
-\bibitem{box2d}
-\BIBentryALTinterwordspacing
-E.~Catto, ``Box2d: A 2d physics engine for games,'' Software, accessed:
-  2026-01-14. [Online]. Available: \url{https://box2d.org/}
-\BIBentrySTDinterwordspacing
-
-\bibitem{gymnasium}
-\BIBentryALTinterwordspacing
-{Farama Foundation}, ``Gymnasium: A standard api for reinforcement learning
-  environments,'' Software, accessed: 2026-01-14. [Online]. Available:
-  \url{https://gymnasium.farama.org/}
-\BIBentrySTDinterwordspacing
-
 \bibitem{bradski2000opencv}
 \BIBentryALTinterwordspacing
 G.~Bradski, ``The opencv library,'' in \emph{Dr. Dobb's Journal of Software
@@ -81,7 +84,8 @@ G.~Bradski, ``The opencv library,'' in \emph{Dr. Dobb's Journal of Software
 \bibitem{lin1992replay}
 L.-J. Lin, ``Self-improving reactive agents based on reinforcement learning,
   planning and teaching,'' in \emph{Machine Learning: Proceedings of the Eighth
-  International Workshop}, 1992.
+  International Workshop}.\hskip 1em plus 0.5em minus 0.4em\relax Morgan
+  Kaufmann, 1992.
 
 \bibitem{kingma2015adam}
 \BIBentryALTinterwordspacing
@@ -90,17 +94,38 @@ D.~P. Kingma and J.~Ba, ``Adam: A method for stochastic optimization,''
   [Online]. Available: \url{https://arxiv.org/abs/1412.6980}
 \BIBentrySTDinterwordspacing
 
+\bibitem{wilson2017marginal}
+\BIBentryALTinterwordspacing
+A.~C. Wilson, R.~Roelofs, M.~Stern, N.~Srebro, and B.~Recht, ``The marginal
+  value of adaptive gradient methods in machine learning,'' \emph{arXiv
+  preprint arXiv:1705.08292}, 2017. [Online]. Available:
+  \url{https://doi.org/10.48550/arXiv.1705.08292}
+\BIBentrySTDinterwordspacing
+
+\bibitem{reddi2019adam}
+\BIBentryALTinterwordspacing
+S.~J. Reddi, S.~Kale, and S.~Kumar, ``On the convergence of adam and beyond,''
+  \emph{arXiv preprint arXiv:1904.09237}, 2019, appeared in ICLR 2018.
+  [Online]. Available: \url{https://doi.org/10.48550/arXiv.1904.09237}
+\BIBentrySTDinterwordspacing
+
 \bibitem{kluyver2016jupyter}
+\BIBentryALTinterwordspacing
 T.~Kluyver, B.~Ragan-Kelley, F.~P{\'{e}}rez, B.~Granger, M.~Bussonnier,
   J.~Frederic, K.~Kelley, J.~Hamrick, J.~Grout, S.~Corlay, P.~Ivanov, D.~Avila,
   S.~Abdalla, and C.~Willing, ``Jupyter notebooks---a publishing format for
   reproducible computational workflows,'' in \emph{Positioning and Power in
   Academic Publishing: Players, Agents and Agendas}.\hskip 1em plus 0.5em minus
-  0.4em\relax IOS Press, 2016, pp. 87--90.
+  0.4em\relax IOS Press, 2016, pp. 87--90. [Online]. Available:
+  \url{https://doi.org/10.3233/978-1-61499-649-1-87}
+\BIBentrySTDinterwordspacing
 
 \bibitem{hunter2007matplotlib}
+\BIBentryALTinterwordspacing
 J.~D. Hunter, ``Matplotlib: A 2d graphics environment,'' \emph{Computing in
-  Science \& Engineering}, vol.~9, no.~3, pp. 90--95, 2007.
+  Science \& Engineering}, vol.~9, no.~3, pp. 90--95, 2007. [Online].
+  Available: \url{https://doi.org/10.1109/MCSE.2007.55}
+\BIBentrySTDinterwordspacing
 
 \bibitem{python}
 \BIBentryALTinterwordspacing
@@ -116,19 +141,27 @@ A.~Paszke, S.~Gross, F.~Massa, A.~Lerer, J.~Bradbury, G.~Chanan, T.~Killeen,
   M.~Raison, A.~Tejani, S.~Chilamkurthy, B.~Steiner, L.~Fang, J.~Bai, and
   S.~Chintala, ``Pytorch: An imperative style, high-performance deep learning
   library,'' in \emph{Advances in Neural Information Processing Systems
-  (NeurIPS)}, 2019. [Online]. Available: \url{https://pytorch.org/}
+  (NeurIPS)}, 2019, project site: https://pytorch.org/ (accessed: 2026-01-14).
+  [Online]. Available:
+  \url{https://proceedings.neurips.cc/paper_files/paper/2019/hash/bdbca288fee7f92f2bfa9f7012727740-Abstract.html}
 \BIBentrySTDinterwordspacing
 
 \bibitem{harris2020numpy}
+\BIBentryALTinterwordspacing
 C.~R. Harris, K.~J. Millman, S.~J. van~der Walt, R.~Gommers, P.~Virtanen,
   D.~Cournapeau, E.~Wieser, J.~Taylor, S.~Berg, N.~J. Smith \emph{et~al.},
   ``Array programming with {NumPy},'' \emph{Nature}, vol. 585, no. 7825, pp.
-  357--362, 2020.
+  357--362, 2020. [Online]. Available:
+  \url{https://doi.org/10.1038/s41586-020-2649-2}
+\BIBentrySTDinterwordspacing
 
 \bibitem{mckinney2010pandas}
+\BIBentryALTinterwordspacing
 W.~McKinney, ``Data structures for statistical computing in python,'' in
   \emph{Proceedings of the 9th Python in Science Conference (SciPy)}, 2010, pp.
-  56--61.
+  56--61. [Online]. Available:
+  \url{https://doi.org/10.25080/Majora-92bf1922-00a}
+\BIBentrySTDinterwordspacing
 
 \bibitem{imageio}
 \BIBentryALTinterwordspacing
@@ -164,6 +197,13 @@ T.~Haarnoja, A.~Zhou, P.~Abbeel, and S.~Levine, ``Soft actor-critic: Off-policy
   maximum entropy deep reinforcement learning with a stochastic actor,'' in
   \emph{International Conference on Machine Learning (ICML)}, 2018. [Online].
   Available: \url{http://proceedings.mlr.press/v80/haarnoja18b.html}
+\BIBentrySTDinterwordspacing
+
+\bibitem{latex}
+\BIBentryALTinterwordspacing
+{The LaTeX Project}, ``{LaTeX} -- a document preparation system,''
+  Software/Documentation, accessed: 2026-01-14. [Online]. Available:
+  \url{https://www.latex-project.org/}
 \BIBentrySTDinterwordspacing
 
 \end{thebibliography}

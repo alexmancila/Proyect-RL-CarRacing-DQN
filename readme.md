@@ -36,6 +36,24 @@ El cuaderno parcial previo se mantiene como referencia:
 
 - [notebooks/entrenamiento_y_resultados_exparcial.ipynb](notebooks/entrenamiento_y_resultados_exparcial.ipynb)
 
+## Artículo (LaTeX)
+
+El artículo final en LaTeX está en:
+
+- [artículo/RL_Car_Racing_Grupo4.tex](artículo/RL_Car_Racing_Grupo4.tex)
+
+Para compilar en Windows (PowerShell), se incluye un script que ejecuta el ciclo completo (pdfLaTeX → BibTeX → pdfLaTeX → pdfLaTeX):
+
+```
+powershell -ExecutionPolicy Bypass -File tools/compilar_articulo.ps1
+```
+
+Si quieres limpiar los archivos auxiliares y recompilar desde cero:
+
+```
+powershell -ExecutionPolicy Bypass -File tools/compilar_articulo.ps1 -Clean
+```
+
 ## Estructura del proyecto (actual)
 
 ```

@@ -1,13 +1,14 @@
 # Fdb version 4
-["bibtex RL_Car_Racing_Grupo4"] 1768423234.06475 "RL_Car_Racing_Grupo4.aux" "RL_Car_Racing_Grupo4.bbl" "RL_Car_Racing_Grupo4" 1768427215.89462 0
-  "./rl_references.bib" 1768423309 7541 7e887a6e571ca6f5a6dcbca09c7f82cd ""
+["bibtex RL_Car_Racing_Grupo4"] 1768441038.69375 "RL_Car_Racing_Grupo4.aux" "RL_Car_Racing_Grupo4.bbl" "RL_Car_Racing_Grupo4" 1768441158.41701 0
+  "./rl_references.bib" 1768441109 9180 4de1de849742182f66941d3d0f29f366 ""
   "C:/MiKTeX/bibtex/bst/ieeetran/IEEEtran.bst" 1440622569 57748 7c8250ecf02814ce6ddc0cdbb63df1dd ""
-  "RL_Car_Racing_Grupo4.aux" 1768427214 8111 86e1a4d86fe19547215bc77128286caa "pdflatex"
+  "RL_Car_Racing_Grupo4.aux" 1768441157 8806 7a73d0190e5e60f49502671eb13ceab0 "pdflatex"
   (generated)
   "RL_Car_Racing_Grupo4.bbl"
   "RL_Car_Racing_Grupo4.blg"
   (rewritten before read)
-["pdflatex"] 1768427212.0973 "c:/temp/MIA_UNI_25-2/trabajo_final/Proyect-RL-CarRacing-DQN/artículo/RL_Car_Racing_Grupo4.tex" "RL_Car_Racing_Grupo4.pdf" "RL_Car_Racing_Grupo4" 1768427215.89644 0
+["pdflatex"] 1768441154.14215 "c:/temp/MIA_UNI_25-2/trabajo_final/Proyect-RL-CarRacing-DQN/artículo/RL_Car_Racing_Grupo4.tex" "RL_Car_Racing_Grupo4.pdf" "RL_Car_Racing_Grupo4" 1768441158.41861 0
+  "../diagrama.png" 1767799118 60330 d88ad489940c7ccab1b89765ac08eea1 ""
   "../resultados/eval_1000_double_dqn/grafico_rewards.png" 1767799119 42416 c0444cc1929c7cba0b0194f70291d5a3 ""
   "../resultados/eval_1000_dqn/grafico_rewards.png" 1767799119 36102 d96de1cb4fcf435fc7b5668b9d10c212 ""
   "../resultados/eval_200_dueling_double_dqn/grafico_rewards.png" 1767799120 32628 a1ac7dfb30bba6332af664780e3da08b ""
@@ -157,11 +158,11 @@
   "C:/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/QU1267/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1768417478 83609 ebbc432e6cbbb238d39535255db2c8bd ""
   "C:/Users/QU1267/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1761346531 13304791 7525731968c75d705eddc88c959701ea ""
-  "RL_Car_Racing_Grupo4.aux" 1768427214 8111 86e1a4d86fe19547215bc77128286caa "pdflatex"
-  "RL_Car_Racing_Grupo4.bbl" 1768423234 7431 833665e71580f8afbbc8aa2f3c5d386b "bibtex RL_Car_Racing_Grupo4"
-  "RL_Car_Racing_Grupo4.out" 1768427214 3594 e09c0e7101d490aeb7c97db50b34928e "pdflatex"
-  "RL_Car_Racing_Grupo4.tex" 1768427210 15705 5d5c9470ac2e06d703c0b4ea13b8e41c ""
-  "c:/temp/MIA_UNI_25-2/trabajo_final/Proyect-RL-CarRacing-DQN/artículo/RL_Car_Racing_Grupo4.tex" 1768427210 15705 5d5c9470ac2e06d703c0b4ea13b8e41c ""
+  "RL_Car_Racing_Grupo4.aux" 1768441157 8806 7a73d0190e5e60f49502671eb13ceab0 "pdflatex"
+  "RL_Car_Racing_Grupo4.bbl" 1768441043 9201 494fd3fffa6e261328ef33db6a45822d "bibtex RL_Car_Racing_Grupo4"
+  "RL_Car_Racing_Grupo4.out" 1768441157 3770 cd1b23425959e7d331c78a8404c44548 "pdflatex"
+  "RL_Car_Racing_Grupo4.tex" 1768441152 24577 5e768a951b0fdc01efdf8ddd88749fd5 ""
+  "c:/temp/MIA_UNI_25-2/trabajo_final/Proyect-RL-CarRacing-DQN/artículo/RL_Car_Racing_Grupo4.tex" 1768441152 24577 5e768a951b0fdc01efdf8ddd88749fd5 ""
   "figuras/logo.png" 1768411946 448022 8c054dd97ba794fcb03cdb138e31378f ""
   (generated)
   "RL_Car_Racing_Grupo4.aux"
