@@ -1,0 +1,1107 @@
+\documentclass[xcolor=dvipsnames,aspectratio=169]{beamer}
+
+% Tema y color
+\usetheme{Madrid}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{}
+
+% Codificación y lenguaje
+\usepackage[spanish,es-lcroman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Paquetes
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{listings}
+\usepackage{fancyvrb}
+
+% Configuración de color
+\definecolor{darkred}{RGB}{180,0,0}
+\definecolor{darkblue}{RGB}{0,70,150}
+\definecolor{darkgreen}{RGB}{0,120,0}
+\definecolor{codebg}{RGB}{245,245,245}
+
+% Configuración de listings para código
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    breakatwhitespace=true,
+    language=Python,
+    commentstyle=\color{gray},
+    keywordstyle=\color{blue},
+    stringstyle=\color{red},
+    showstringspaces=false,
+    backgroundcolor=\color{codebg},
+    frame=single,
+    framerule=0.4pt,
+    numbers=left,
+    numberstyle=\tiny,
+    xleftmargin=2em
+}
+
+% Encabezado y pie
+\setbeamertemplate{headline}{
+    \leavevmode
+    \hbox{%
+        \begin{beamercolorbox}[wd=\paperwidth,ht=2.5ex,dp=1.125ex]{palette quaternary}
+            \insertframenumber{} / \inserttotalframenumber \hfill \insertshorttitle
+        \end{beamercolorbox}
+    }
+}
+\setbeamertemplate{footline}{
+    \leavevmode
+    \hbox{%
+        \begin{beamercolorbox}[wd=0.18\paperwidth,ht=2.5ex,dp=1.125ex,center]{palette tertiary}
+            \scriptsize Grupo 4
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[wd=0.64\paperwidth,ht=2.5ex,dp=1.125ex,center]{palette quaternary}
+            \scriptsize \insertsectionhead
+        \end{beamercolorbox}%
+        \begin{beamercolorbox}[wd=0.18\paperwidth,ht=2.5ex,dp=1.125ex,center]{palette tertiary}
+            \insertslidenavigationsymbol
+            \insertframenavigationsymbol
+            \insertsubsectionnavigationsymbol
+            \insertsectionnavigationsymbol
+            \insertdocnavigationsymbol
+            \insertbackfindforwardnavigationsymbol
+        \end{beamercolorbox}%
+    }
+}
+
+% Título
+\title[RL en CarRacing-v3]{Aprendizaje por Refuerzo Profundo para CarRacing-v3 \\ con DQN y Variantes}
+\author{\textbf{Grupo 4}:\\ Luis Koc\\ Alex Mancilla\\ Herbert Meléndez\\ Dennis Jack Paitán}
+\institute{Universidad Nacional de Ingeniería (UNI) \\ Maestría en Inteligencia Artificial}
+\date{15 de enero de 2026}
+
+\begin{document}
+
+\AtBeginSection{
+    \begin{frame}[plain]
+        \centering
+        \Large\textbf{\insertsection}
+    \end{frame}
+}
+
+% ========================================================================
+% PORTADA
+% ========================================================================
+\frame{\titlepage}
+
+% ========================================================================
+% AGENDA
+% ========================================================================
+\begin{frame}{Agenda}
+    \tableofcontents
+\end{frame}
+
+% ========================================================================
+% SECCIÓN 1: INTRODUCCIÓN Y MOTIVACIÓN
+% ========================================================================
+\section{Introducción y Motivación}
+
+\begin{frame}{Problema y Motivación}
+    \begin{itemize}
+        \item \textbf{Entorno}: CarRacing-v3 (Gymnasium)
+        \begin{itemize}
+            \item Control continuo nativo: \emph{(steer, gas, brake)}
+            \item Observaciones visuales: imágenes RGB $96 \times 96$
+            \item Dinámica física realista basada en Box2D
+            \item Entorno parcialmente observable (solo vista cenital)
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        
+        \item \textbf{Desafío Principal}: Adaptación de DQN a control continuo
+        \begin{itemize}
+            \item DQN requiere espacio de acciones \textbf{discreto}
+            \item CarRacing proporciona control continuo 3D
+            \item Solución: discretización a 12 acciones fijas
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        
+        \item \textbf{Objetivo}: Comparar DQN, Double DQN y Dueling DQN en este entorno
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Visualización del Entorno}
+    \begin{center}
+        \includegraphics[width=0.58\textwidth]{../artículo/figuras/carracing_entorno.png}
+    \end{center}
+    
+    \vspace{0.01cm}
+    
+    \small \textbf{Vista del entorno CarRacing-v3}: observación RGB de $96 \times 96$ píxeles que recibe el agente. 
+    El vehículo (punto blanco) navega por la pista generada proceduralmente.
+\end{frame}
+
+% ========================================================================
+% SECCIÓN 2: METODOLOGÍA
+% ========================================================================
+\section{Metodología}
+
+\begin{frame}{Discretización de Acciones}
+    \textbf{Desafío}: DQN trabaja con acciones \textbf{discretas}, pero CarRacing es \textbf{continuo}
+    
+    \vspace{0.4cm}
+    
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Espacio Original (Continuo):}
+        \begin{itemize}
+            \item Timón: $[-1, 1]$
+            \item Acelerador: $[0, 1]$
+            \item Freno: $[0, 1]$
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textbf{Espacio Discretizado:}
+        \begin{itemize}
+            \item Giro: $\{-1, 0, 1\}$
+            \item Aceleración: $\{0, 1\}$
+            \item Freno: $\{0, 0.2\}$
+        \end{itemize}
+    \end{columns}
+    
+    \vspace{0.4cm}
+    
+    \textbf{Resultado}: $3 \times 2 \times 2 = 12$ acciones discretas
+    
+    \vspace{0.3cm}
+    
+    Cada acción cubre una maniobra básica:
+    \begin{itemize}
+        \item Ir recto, girar izquierda/derecha
+        \item Acelerar o mantener velocidad
+        \item Frenar o mantener aceleración
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Preprocesamiento de Imágenes}
+    \begin{columns}
+        \column{0.6\textwidth}
+        \textbf{Pipeline de Preprocesamiento}:
+        
+        \begin{enumerate}
+            \item Frame bruto RGB: $96 \times 96 \times 3$
+            \item \textbf{Conversión a escala de grises}: $96 \times 96 \times 1$
+            \item \textbf{Normalización}: valores en $[0, 1]$
+            \item \textbf{Frame Stacking}: acumular 4 frames
+            \item \textbf{Estado final}: $(4, 96, 96)$
+        \end{enumerate}
+        
+        \vspace{0.3cm}
+        
+        \textbf{¿Por qué 4 frames?}
+        \begin{itemize}
+            \item Captura \textbf{dinámica temporal}
+            \item Permite deducir velocidad/dirección
+            \item Evita necesidad de redes recurrentes
+        \end{itemize}
+        
+        \column{0.4\textwidth}
+        \small
+        \textbf{Ejemplo de transformación}:
+        
+        \vspace{0.2cm}
+        
+        Entrada: 96×96×3 RGB
+        
+        $\Downarrow$
+        
+        Escala de grises
+        
+        $\Downarrow$
+        
+        Normalización [0,1]
+        
+        $\Downarrow$
+        
+        Stack de 4 frames
+        
+        $\Downarrow$
+        
+        Salida: 4×96×96
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Código: Preprocesamiento en Python}
+    \begin{lstlisting}
+# Extracto de src/preprocesamiento.py
+import cv2
+import numpy as np
+
+def preprocesar_frame(frame):
+    gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+    gray = cv2.resize(gray, (96, 96))
+    gray = gray.astype(np.float32) / 255.0
+    return gray
+
+def aplicar_frame_stacking(nuevo_frame, stack_anterior):
+    # Descartar el frame mas antiguo
+    # Agregar el nuevo al final
+    stack = np.concatenate([stack_anterior[1:],
+        nuevo_frame[np.newaxis, ...]
+    ])
+    return stack
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}{Configuración del Entrenamiento}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Optimización:}
+        \begin{itemize}
+            \item \textbf{Optimizador}: Adam
+            \item \textbf{Learning rate}: $1 \times 10^{-4}$
+            \item \textbf{Descuento $\gamma$}: 0.99
+            \item \textbf{Pérdida}: MSE
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        
+        \textbf{Exploración ($\epsilon$-greedy):}
+        \begin{itemize}
+            \item Inicial: $\epsilon_0 = 1.0$
+            \item Mínimo: $\epsilon_{min} = 0.05$
+            \item Decaimiento: $\epsilon \leftarrow \epsilon \times 0.995$
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textbf{Experience Replay:}
+        \begin{itemize}
+            \item Capacidad: 50,000 transiciones
+            \item Mini-batch: 64 muestras
+            \item Muestreo: aleatorio uniforme
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        
+        \textbf{Red Neuronal (CNN):}
+        \begin{itemize}
+            \item Input: $(4, 96, 96)$
+            \item Conv1: 32 filtros, $8 \times 8$
+            \item Conv2: 64 filtros, $4 \times 4$
+            \item Fully connected: 512 neuronas
+            \item Output: 12 acciones
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Código: Configuración del Proyecto}
+    \begin{lstlisting}
+# Extracto de src/configuracion.py
+GAMMA = 0.99
+LR = 1e-4
+TRAINING_BATCH_SIZE = 64
+REPLAY_BUFFER_SIZE = 50_000
+
+EPSILON_INICIAL = 1.0
+EPSILON_MINIMO = 0.05
+EPSILON_DECAY = 0.995
+
+SKIP_FRAMES = 2
+FRAME_STACK = 4
+IMG_SIZE = 96
+
+TARGET_UPDATE_FREQUENCY = 5
+CHECKPOINT_FREQUENCY = 25
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Código: Preprocesamiento de Frames}
+    \begin{lstlisting}
+# Extracto de src/preprocesamiento.py
+def procesar_frame(frame):
+    # Convertir RGB a escala de grises
+    gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+    # Redimensionar a 96x96
+    gray = cv2.resize(gray, (96, 96))
+    # Normalizar: escalar a [0, 1]
+    gray = gray.astype(np.float32) / 255.0
+    return gray
+
+def stack_frames(stack_anterior, nuevo_frame):
+    # Mantener ultimos 4 frames (FRAME_STACK=4)
+    stack = np.concatenate(
+        [stack_anterior[1:], nuevo_frame[np.newaxis, ...]]
+    )
+    return stack
+    \end{lstlisting}
+\end{frame}
+
+% ========================================================================
+% SECCIÓN 3: ALGORITMOS
+% ========================================================================
+\section{Algoritmos}
+
+\begin{frame}{Deep Q-Network (DQN) - Base}
+    \begin{itemize}
+        \item \textbf{Idea fundamental}: Aproximar la función de valor $Q(s,a)$ con una red neuronal profunda
+        
+        \vspace{0.2cm}
+        
+        \item \textbf{Ecuación de Bellman (Temporal Difference)}:
+        $$Q(s,a) \leftarrow Q(s,a) + \alpha \left[ r + \gamma \max_{a'} Q(s',a') - Q(s,a) \right]$$
+        
+        \vspace{0.2cm}
+        
+        \item \textbf{En DQN profundo}:
+        $$\mathcal{L}(\theta) = \mathbb{E}_{(s,a,r,s') \sim \mathcal{D}} \left[ \left( r + \gamma \max_{a'} Q_{\theta^-}(s',a') - Q_\theta(s,a) \right)^2 \right]$$
+        
+        \vspace{0.2cm}
+        
+        \item \textbf{Dos redes}:
+        \begin{itemize}
+            \item \textbf{Red online} $Q_\theta$: se actualiza en cada paso
+            \item \textbf{Red objetivo} $Q_{\theta^-}$: se actualiza cada $C$ pasos (estabilidad)
+        \end{itemize}
+        
+        \vspace{0.2cm}
+        
+        \item \textbf{Experience Replay}: Muestrear transiciones aleatorias del buffer
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Código: Arquitectura DQN}
+    \begin{lstlisting}
+# Extracto de src/agente.py
+import torch.nn as nn
+
+class DQNNet(nn.Module):
+    def __init__(self, num_actions=12):
+        super().__init__()
+        self.conv1 = nn.Conv2d(4, 32, kernel_size=8, stride=4)
+        self.conv2 = nn.Conv2d(32, 64, kernel_size=4, stride=2)
+        self.fc1 = nn.Linear(64 * 11 * 11, 512)
+        self.fc2 = nn.Linear(512, num_actions)
+    
+    def forward(self, x):
+        x = torch.relu(self.conv1(x))
+        x = torch.relu(self.conv2(x))
+        x = x.view(x.size(0), -1)
+        x = torch.relu(self.fc1(x))
+        return self.fc2(x)
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}{Double DQN - Reducción de Sesgo}
+    \textbf{Problema en DQN}: Sobreestimación de valores Q
+    
+    \begin{itemize}
+        \item DQN usa \textbf{la misma red} para seleccionar y evaluar acciones
+        \item Esto causa \textbf{optimismo} en los valores Q aprendidos
+    \end{itemize}
+    
+    \vspace{0.2cm}
+    
+    \textbf{Solución - Double DQN (van Hasselt et al., 2016)}:
+    
+    Desacoplar selección y evaluación:
+    
+    \vspace{0.2cm}
+    
+    $$y = r + \gamma Q_{\theta^-}\left(s', \underbrace{\arg\max_{a'} Q_\theta(s', a')}_{\text{Red online selecciona}}\right)$$
+    
+    \vspace{0.2cm}
+    
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{DQN (estándar)}:
+        \begin{itemize}
+            \item Selecciona: $\max_{a'} Q_\theta$
+            \item Evalúa: $Q_{\theta^-}$
+            \item \textbf{Problema}: Sesgo positivo
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textbf{Double DQN}:
+        \begin{itemize}
+            \item Selecciona: $\arg\max_{a'} Q_\theta$
+            \item Evalúa: $Q_{\theta^-}$
+            \item \textbf{Beneficio}: Menos sesgo
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Dueling DQN - Arquitectura Mejorada}
+    \textbf{Idea}: Separar la estimación del \textbf{valor del estado} y la \textbf{ventaja de acciones}
+    
+    \vspace{0.3cm}
+    
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{DQN Estándar}:
+        
+        \begin{center}
+            \small
+            CNN layers
+            
+            $\Downarrow$
+            
+            Dense layer
+            
+            $\Downarrow$
+            
+            Output: $Q(s,a)$
+        \end{center}
+        
+        \column{0.5\textwidth}
+        \textbf{Dueling DQN}:
+        
+        \begin{center}
+            \small
+            CNN layers
+            
+            $\Downarrow$
+            
+            \begin{tabular}{cc}
+                Value stream & Advantage stream \\
+                Dense: $V(s)$ & Dense: $A(s,a)$ \\
+            \end{tabular}
+            
+            $\Downarrow$
+            
+            Combine: $Q(s,a)$
+        \end{center}
+    \end{columns}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Descomposición}:
+    $$Q(s,a) = V(s) + A(s,a) - \frac{1}{|\mathcal{A}|} \sum_{a'} A(s,a')$$
+\end{frame}
+
+% ========================================================================
+% SECCIÓN 4: ARQUITECTURA DEL PROYECTO
+% ========================================================================
+\section{Arquitectura del Proyecto}
+
+\begin{frame}{Estructura Modular}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Módulos principales} (\texttt{src/}):
+        
+        \small
+        \begin{itemize}
+            \item \texttt{\textbf{main.py}}: Punto de entrada
+            \begin{itemize}
+                \item Parsing de argumentos
+                \item Inicialización de logging
+            \end{itemize}
+            
+            \vspace{0.1cm}
+            
+            \item \texttt{\textbf{configuracion.py}}: Hiperparámetros
+            \begin{itemize}
+                \item Valores centralizados
+                \item Reproducibilidad garantizada
+            \end{itemize}
+            
+            \vspace{0.1cm}
+            
+            \item \texttt{\textbf{entorno.py}}: Interfaz con Gymnasium
+            \begin{itemize}
+                \item Inicialización
+                \item Discretización de acciones
+            \end{itemize}
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \small
+        \begin{itemize}
+            \item \texttt{\textbf{preprocesamiento.py}}: Procesamiento visual
+            \begin{itemize}
+                \item Conversión a escala de grises
+                \item Normalización
+                \item Frame stacking
+            \end{itemize}
+            
+            \vspace{0.1cm}
+            
+            \item \texttt{\textbf{agente.py}}: Modelo y política
+            \begin{itemize}
+                \item Arquitectura CNN
+                \item Política $\epsilon$-greedy
+                \item Actualizaciones de red
+            \end{itemize}
+            
+            \vspace{0.1cm}
+            
+            \item \texttt{\textbf{entrenamiento.py}}: Bucle principal
+            \begin{itemize}
+                \item Ciclo de episodios
+                \item Replay y actualizaciones
+                \item Logging de métricas
+            \end{itemize}
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Diagrama de Arquitectura del Proyecto}
+    \centering
+    \includegraphics[width=0.94\textwidth,height=0.75\textheight,keepaspectratio]{../diagrama.png}
+    
+    \vspace{0.1cm}
+    \small
+    \begin{itemize}
+        \item El agente interactúa con el entorno discretizado y recibe recompensas.
+        \item El preprocesamiento transforma los frames para la CNN (gris, resize, stack).
+        \item El buffer de experiencia alimenta el entrenamiento estable de la red DQN.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Código: Bucle de Entrenamiento Simplificado}
+    \begin{lstlisting}
+# Extracto de src/entrenamiento.py
+def entrenar(ep_ini=1, ep_fin=1000):
+    env = construir_entorno()
+    agente = Agente(num_actions=12)
+    buffer = ReplayBuffer(capacity=50000)
+
+    for ep in range(ep_ini, ep_fin + 1):
+        s = env.reset()
+        while True:
+            a = agente.seleccionar_accion(s, epsilon)
+            s2, r, done, _ = env.step(a)
+            buffer.push((s, a, r, s2, done))
+            if len(buffer) >= batch_size:
+                agente.actualizar(buffer, batch_size)
+            if done:
+                break
+            s = s2
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Código: Política Epsilon-Greedy}
+    \begin{lstlisting}
+# Extracto de src/agente.py
+def seleccionar_accion(self, estado, epsilon):
+    # epsilon-greedy: exploracion vs explotacion
+    if random.random() < epsilon:
+        # EXPLORACION: accion aleatoria
+        return random.randint(0, 11)  # 12 acciones
+    else:
+        basicstyle=\ttfamily\scriptsize,
+        with torch.no_grad():
+            estado_tensor = torch.FloatTensor(
+                estado).unsqueeze(0)
+            q_values = self.red(estado_tensor)
+            accion = q_values.argmax(dim=1)
+        return accion.item()
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}{Flujo de Ejecución}
+    \small
+    \begin{columns}[T]
+        \column{0.52\textwidth}
+        \textbf{1. INICIALIZACIÓN}
+        
+        \texttt{main.py} $\rightarrow$ Cargar config $\rightarrow$ Crear entorno y agente
+        
+        \vspace{0.2cm}
+        
+        \textbf{2. CICLO DE ENTRENAMIENTO (por episodio)}
+        
+        \begin{enumerate}
+            \item Reset del entorno
+            \item Para cada paso del episodio:
+            \begin{itemize}
+                \item Seleccionar acción ($\epsilon$-greedy)
+                \item Ejecutar en entorno
+                \item Guardar en replay buffer
+            \end{itemize}
+                        \item Si buffer suficientemente lleno:
+            \begin{itemize}
+                \item Muestrear mini-batch
+                \item Calcular loss (MSE)
+                \item Backprop y actualizar red online
+            \end{itemize}
+        \end{enumerate}
+        
+        \column{0.48\textwidth}
+        \vspace{0.1cm}
+        \begin{itemize}
+            \item Actualizar $\epsilon$ (decay)
+            \item Cada 5 episodios: actualizar red objetivo
+            \item Cada 25 episodios: guardar checkpoint
+            \item Registrar métricas (reward, loss, epsilon, buffer size)
+        \end{itemize}
+        
+        \vspace{0.2cm}
+        
+        \textbf{3. EVALUACIÓN}
+        \begin{enumerate}
+        \item Cargar modelo entrenado \item Evaluar sin exploración ($\epsilon=0$) 
+        \item Reportar resultados
+        \end{enumerate}
+    \end{columns}
+\end{frame}
+
+% ========================================================================
+% SECCIÓN 5: RESULTADOS
+% ========================================================================
+\section{Resultados}
+
+\begin{frame}{Evaluación a 200 Episodios}
+    \begin{table}[!h]
+        \centering
+        \footnotesize
+        \begin{tabular}{lrrrrrr}
+            \toprule
+            \textbf{Algoritmo} & \textbf{Mean} & \textbf{Std} & \textbf{Min} & \textbf{Max} & \textbf{Full} & $n$ \\
+            \midrule
+            DQN & 238.85 & 207.06 & 67.24 & 646.67 & 4 & 5 \\
+            Double DQN & 108.76 & 81.52 & 30.74 & 265.52 & 5 & 5 \\
+            Dueling Double DQN & 262.85 & 174.93 & 46.63 & 463.14 & 4 & 5 \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+    
+    \vspace{0.2cm}
+    
+    \small
+    \textbf{Análisis}:
+    \begin{itemize}
+        \item \textbf{Alta variabilidad}: Std $\approx$ Mean en todas las variantes
+        \item Entrenamiento aún \textbf{en etapas tempranas}
+        \item Double DQN con desempeño bajo: necesita más episodios
+        \item Dueling Double DQN muestra mejor balance
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Evaluación a 1000 Episodios}
+    \begin{table}[!h]
+        \centering
+        \footnotesize
+        \begin{tabular}{lrrrrrr}
+            \toprule
+            \textbf{Algoritmo} & \textbf{Mean} & \textbf{Std} & \textbf{Min} & \textbf{Max} & \textbf{Full} & $n$ \\
+            \midrule
+            DQN & 418.58 & 209.95 & 252.73 & 825.09 & 5 & 5 \\
+            \cellcolor{yellow!30} Double DQN & \textbf{567.72} & 257.19 & 278.29 & \textbf{883.33} & 5 & 5 \\
+            Dueling Double DQN & 462.46 & 222.57 & 189.76 & 793.47 & 4 & 5 \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
+    
+    \vspace{0.2cm}
+    
+    \small
+    \textbf{Hallazgos Principales}:
+    \begin{itemize}
+        \item \textbf{Mejora significativa} de 200 a 1000 episodios en todas las variantes
+        \item \textbf{Double DQN} obtiene el \textbf{mejor desempeño}:
+        \begin{itemize}
+            \item Mayor mean (567.72 vs 418.58 y 462.46)
+            \item Mayor máximo (883.33)
+            \item Todos los episodios completos (Full = 5)
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Gráfico: Recompensa durante Entrenamiento (Comparativa)}
+    \begin{columns}[T]
+        \column{0.33\textwidth}
+        \centering
+        \textbf{DQN}\\
+        \includegraphics[width=0.95\textwidth,height=0.45\textheight,keepaspectratio]{../resultados/experimento_1000ep_dqn/grafico_reward.png}
+        
+        \column{0.33\textwidth}
+        \centering
+        \textbf{Double DQN}\\
+        \includegraphics[width=0.95\textwidth,height=0.45\textheight,keepaspectratio]{../resultados/experimento_1000ep_double_dqn/grafico_reward.png}
+        
+        \column{0.33\textwidth}
+        \centering
+        \textbf{Dueling Double DQN}\\
+        \includegraphics[width=0.95\textwidth,height=0.45\textheight,keepaspectratio]{../resultados/experimento_1000ep_dueling_double_dqn/grafico_reward.png}
+    \end{columns}
+    
+    \vspace{0.1cm}
+    \small
+    \textbf{Interpretación}:
+    \begin{itemize}
+        \item Todas las variantes mejoran con el tiempo; Double DQN alcanza recompensas más altas.
+        \item Dueling Double DQN muestra mayor estabilidad en la etapa final.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Gráfico: Loss durante Entrenamiento (Comparativa)}
+    \begin{columns}[T]
+        \column{0.33\textwidth}
+        \centering
+        \textbf{DQN}\\
+        \includegraphics[width=0.95\textwidth,height=0.45\textheight,keepaspectratio]{../resultados/experimento_1000ep_dqn/grafico_loss.png}
+        
+        \column{0.33\textwidth}
+        \centering
+        \textbf{Double DQN}\\
+        \includegraphics[width=0.95\textwidth,height=0.45\textheight,keepaspectratio]{../resultados/experimento_1000ep_double_dqn/grafico_loss.png}
+        
+        \column{0.33\textwidth}
+        \centering
+        \textbf{Dueling Double DQN}\\
+        \includegraphics[width=0.95\textwidth,height=0.45\textheight,keepaspectratio]{../resultados/experimento_1000ep_dueling_double_dqn/grafico_loss.png}
+    \end{columns}
+    
+    \vspace{0.1cm}
+    \small
+    \textbf{Interpretación}:
+    \begin{itemize}
+        \item En RL la loss es ruidosa; la convergencia se evalúa mejor con el reward.
+        \item Dueling Double DQN presenta oscilaciones más controladas en etapas finales.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Gráfico: Decaimiento de Epsilon (Comparativa)}
+    \begin{columns}[T]
+        \column{0.33\textwidth}
+        \centering
+        \textbf{DQN}\\
+        \includegraphics[width=0.95\textwidth,height=0.45\textheight,keepaspectratio]{../resultados/experimento_1000ep_dqn/grafico_epsilon.png}
+        
+        \column{0.33\textwidth}
+        \centering
+        \textbf{Double DQN}\\
+        \includegraphics[width=0.95\textwidth,height=0.45\textheight,keepaspectratio]{../resultados/experimento_1000ep_double_dqn/grafico_epsilon.png}
+        
+        \column{0.33\textwidth}
+        \centering
+        \textbf{Dueling Double DQN}\\
+        \includegraphics[width=0.95\textwidth,height=0.45\textheight,keepaspectratio]{../resultados/experimento_1000ep_dueling_double_dqn/grafico_epsilon.png}
+    \end{columns}
+    
+    \vspace{0.1cm}
+    \small
+    \textbf{Interpretación}:
+    \begin{itemize}
+        \item Todos aplican el mismo schedule: exploración inicial y meseta en $\epsilon_{min}$.
+        \item La política se vuelve más estable tras los primeros episodios.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Gráfico: Crecimiento del Replay Buffer (Comparativa)}
+    \begin{columns}[T]
+        \column{0.33\textwidth}
+        \centering
+        \textbf{DQN}\\
+        \includegraphics[width=0.95\textwidth,height=0.45\textheight,keepaspectratio]{../resultados/experimento_1000ep_dqn/grafico_buffer.png}
+        
+        \column{0.33\textwidth}
+        \centering
+        \textbf{Double DQN}\\
+        \includegraphics[width=0.95\textwidth,height=0.45\textheight,keepaspectratio]{../resultados/experimento_1000ep_double_dqn/grafico_buffer.png}
+        
+        \column{0.33\textwidth}
+        \centering
+        \textbf{Dueling Double DQN}\\
+        \includegraphics[width=0.95\textwidth,height=0.45\textheight,keepaspectratio]{../resultados/experimento_1000ep_dueling_double_dqn/grafico_buffer.png}
+    \end{columns}
+    
+    \vspace{0.1cm}
+    \small
+    \textbf{Interpretación}:
+    \begin{itemize}
+        \item El buffer se satura rápidamente (capacidad 50,000) en las tres variantes.
+        \item Tras llenarse, el muestreo aleatorio favorece estabilidad del entrenamiento.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Gráfico: Evaluación a 1000 Episodios (Comparativa)}
+    \begin{columns}[T]
+        \column{0.33\textwidth}
+        \centering
+        \textbf{DQN}\\
+        \includegraphics[width=0.95\textwidth,height=0.45\textheight,keepaspectratio]{../resultados/eval_1000_dqn/grafico_rewards.png}
+        
+        \column{0.33\textwidth}
+        \centering
+        \textbf{Double DQN}\\
+        \includegraphics[width=0.95\textwidth,height=0.45\textheight,keepaspectratio]{../resultados/eval_1000_double_dqn/grafico_rewards.png}
+        
+        \column{0.33\textwidth}
+        \centering
+        \textbf{Dueling Double DQN}\\
+        \includegraphics[width=0.95\textwidth,height=0.45\textheight,keepaspectratio]{../resultados/eval_1000_dueling_double_dqn/grafico_rewards.png}
+    \end{columns}
+    
+    \vspace{0.1cm}
+    \small
+    \textbf{Interpretación}:
+    \begin{itemize}
+        \item 5 episodios de evaluación sin exploración ($\epsilon = 0$).
+        \item Double DQN logra recompensas más altas; Dueling DQN es más estable.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Gráfico: Evaluación a 200 Episodios (Comparativa)}
+    \begin{columns}[T]
+        \column{0.33\textwidth}
+        \centering
+        \textbf{DQN}\\
+        \includegraphics[width=0.95\textwidth,height=0.45\textheight,keepaspectratio]{../resultados/eval_200_dqn/grafico_rewards.png}
+        
+        \column{0.33\textwidth}
+        \centering
+        \textbf{Double DQN}\\
+        \includegraphics[width=0.95\textwidth,height=0.45\textheight,keepaspectratio]{../resultados/eval_200_double_dqn/grafico_rewards.png}
+        
+        \column{0.33\textwidth}
+        \centering
+        \textbf{Dueling Double DQN}\\
+        \includegraphics[width=0.95\textwidth,height=0.45\textheight,keepaspectratio]{../resultados/eval_200_dueling_double_dqn/grafico_rewards.png}
+    \end{columns}
+    
+    \vspace{0.1cm}
+    \small
+    \textbf{Interpretación}:
+    \begin{itemize}
+        \item Desempeño más variable por menor entrenamiento.
+        \item Dueling Double DQN mantiene mayor estabilidad temprana.
+    \end{itemize}
+\end{frame}
+
+% ========================================================================
+% SECCIÓN 6: ANÁLISIS DETALLADO
+% ========================================================================
+\section{Análisis Detallado}
+
+\begin{frame}{Comparación Cuantitativa}
+    \begin{center}
+        \small
+        \textbf{Resumen de Resultados por Etapa de Entrenamiento}
+        
+        \vspace{0.3cm}
+        
+        \begin{tabular}{|l|c|c|c|}
+            \hline
+            & \textbf{200 eps} & \textbf{1000 eps} & \textbf{Mejora \%} \\
+            \hline
+            \textbf{DQN} & 238.85 & 418.58 & +75.4 \\
+            \textbf{Double DQN} & 108.76 & 567.72 & +421.8 \\
+            \textbf{Dueling DD} & 262.85 & 462.46 & +75.9 \\
+            \hline
+        \end{tabular}
+        
+        \vspace{0.5cm}
+    \end{center}
+    
+    \textbf{Observaciones clave}:
+    \begin{itemize}
+        \item \textbf{Double DQN}: Mejora más dramática (+421.8\%)
+        \begin{itemize}
+            \item A 200 eps: desempeño bajo, necesita convergencia
+            \item A 1000 eps: mejor solución final
+        \end{itemize}
+        
+        \item \textbf{DQN y Dueling DQN}: Mejora similar (+75\%)
+        \begin{itemize}
+            \item Más estables desde inicio
+            \item Techo de desempeño menor
+        \end{itemize}
+        
+        \item \textbf{Conclusión}: Reducción de sesgo (Double DQN) requiere tiempo
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Análisis de Estabilidad}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{A 200 Episodios}:
+        
+        Desviación Estándar:
+        \begin{itemize}
+            \item DQN: 207.06
+            \item DD: 81.52 [MEJOR] \textbf{(mejor)}
+            \item DDD: 174.93
+        \end{itemize}
+        
+        Double DQN más estable
+        
+        pero con reward bajo
+        
+        \column{0.5\textwidth}
+        \textbf{A 1000 Episodios}:
+        
+        Desviación Estándar:
+        \begin{itemize}
+            \item DQN: 209.95
+            \item DD: 257.19
+            \item DDD: 222.57 [MEJOR] \textbf{(mejor)}
+        \end{itemize}
+        
+        Dueling DDD más estable
+        
+        Double DQN: alto reward
+        con varianza mayor
+    \end{columns}
+    
+    \vspace{0.3cm}
+    
+    \textbf{Trade-off análisis}:
+    \begin{itemize}
+        \item \textbf{Double DQN}: Máximo desempeño (567.72) pero variabilidad notable
+        \item \textbf{Dueling DQN}: Balance entre desempeño y estabilidad
+        \item \textbf{Recomendación}: Double DQN para máximo rendimiento
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Limitaciones}
+    \begin{enumerate}
+        \item \textbf{Estadística}: Solo 5 episodios de evaluación
+        \begin{itemize}
+            \item Sin múltiples semillas
+            \item Limita inferencia rigurosa
+        \end{itemize}
+        
+        \vspace{0.2cm}
+        
+        \item \textbf{Discretización}: 12 acciones
+        \begin{itemize}
+            \item Limita control preciso
+            \item No aprovecha naturaleza continua
+        \end{itemize}
+        
+        \vspace{0.2cm}
+        
+        \item \textbf{Recursos}: CPU, 1000 episodios
+        \begin{itemize}
+            \item Sin búsqueda sistemática de hiperparámetros
+            \item Presupuesto moderado
+        \end{itemize}
+        
+        \vspace{0.2cm}
+        
+        \item \textbf{Varianza del entorno}
+        \begin{itemize}
+            \item Pistas generadas aleatoriamente
+            \item Dificulta reproducibilidad exacta
+        \end{itemize}
+    \end{enumerate}
+\end{frame}
+
+% ========================================================================
+% SECCIÓN 7: CONCLUSIONES Y TRABAJO FUTURO
+% ========================================================================
+\section{Conclusiones y Trabajo Futuro}
+
+\begin{frame}{Conclusiones}
+    \begin{itemize}
+        \item \checkmark \textbf{Objetivos Cumplidos}:
+        \begin{itemize}
+            \item Implementación integrada de DQN y variantes
+            \item Entrenamiento reproducible con arquitectura modular
+            \item Evaluación cuantitativa con métricas documentadas
+            \item Automatización de reportes
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        
+        \item \checkmark \textbf{Hallazgo Principal}:
+        \begin{itemize}
+            \item \textbf{Double DQN es más competitivo} en CarRacing-v3
+            \item Mejora 421.8\% de 200 a 1000 episodios
+            \item Reward máximo: 567.72
+            \item Coherente con teoría
+        \end{itemize}
+        
+        \vspace{0.3cm}
+        
+        \item \checkmark \textbf{Aporte Metodológico}:
+        \begin{itemize}
+            \item Pipeline reproducible documentado
+            \item Infraestructura extensible
+            \item Código en GitHub
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Trabajo Futuro - Mejoras Corto Plazo}
+    \begin{itemize}
+        \item \textbf{Robustez Estadística}:
+        \begin{itemize}
+            \item Aumentar a 50+ episodios de evaluación
+            \item Ejecutar 5-10 semillas distintas
+            \item Reportar intervalos de confianza
+        \end{itemize}
+        
+        \vspace{0.2cm}
+        
+        \item \textbf{Hiperparámetros}:
+        \begin{itemize}
+            \item Búsqueda de learning rate (1e-5 a 1e-3)
+            \item Análisis de sensibilidad de $\gamma$
+            \item Variación de batch size
+        \end{itemize}
+        
+        \vspace{0.2cm}
+        
+        \item \textbf{Mejora de Discretización}:
+        \begin{itemize}
+            \item Aumentar a 18-24 acciones
+            \item Evaluar impacto en desempeño
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Trabajo Futuro - Técnicas Avanzadas}
+    \begin{itemize}
+        \item \textbf{Mejoras en Muestreo}:
+        \begin{itemize}
+            \item \textbf{Prioritized Experience Replay (PER)}: muestrear experiencias importantes
+            \item \textbf{Multi-step returns}: propagar recompensas a más largo plazo
+        \end{itemize}
+        
+        \vspace{0.2cm}
+        
+        \item \textbf{Estabilización}:
+        \begin{itemize}
+            \item Huber loss
+            \item Gradient clipping
+            \item Polyak averaging
+        \end{itemize}
+        
+        \vspace{0.2cm}
+        
+        \item \textbf{Métodos para Acciones Continuas}:
+        \begin{itemize}
+            \item \textbf{DDPG}, \textbf{SAC}, \textbf{PPO}
+            \item Aprovechar naturaleza continua de CarRacing
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+% ========================================================================
+% DIAPOSITIVA FINAL
+% ========================================================================
+\begin{frame}[plain]
+    \centering
+    \Large \textbf{¿Preguntas?}
+    
+    \vspace{1cm}
+    
+    \normalsize
+    \textbf{Repositorio}: \url{https://github.com/alexmancila/Proyect-RL-CarRacing-DQN}
+    
+    \vspace{0.5cm}
+    
+    \textbf{Contacto}:
+    
+    \small
+    \begin{tabular}{@{}l l@{}}
+        Luis Koc & \texttt{luis.koc@gmail.com} \\
+        Alex Mancilla & \texttt{amancillaa@uni.pe} \\
+        Herbert Meléndez & \texttt{hamg.94@gmail.com} \\
+        Dennis Jack Paitán & \texttt{dennis.paitan.c@uni.pe}
+    \end{tabular}
+\end{frame}
+
+\end{document}

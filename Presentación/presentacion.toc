@@ -1,0 +1,8 @@
+\babel@toc {spanish}{}\relax 
+\beamer@sectionintoc {1}{Introducción y Motivación}{3}{0}{1}
+\beamer@sectionintoc {2}{Metodología}{6}{0}{2}
+\beamer@sectionintoc {3}{Algoritmos}{13}{0}{3}
+\beamer@sectionintoc {4}{Arquitectura del Proyecto}{18}{0}{4}
+\beamer@sectionintoc {5}{Resultados}{24}{0}{5}
+\beamer@sectionintoc {6}{Análisis Detallado}{33}{0}{6}
+\beamer@sectionintoc {7}{Conclusiones y Trabajo Futuro}{37}{0}{7}

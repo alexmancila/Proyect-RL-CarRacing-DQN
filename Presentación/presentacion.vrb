@@ -1,0 +1,17 @@
+\frametitle{Código: Política Epsilon-Greedy}
+\begin{lstlisting}
+# Extracto de src/agente.py
+def seleccionar_accion(self, estado, epsilon):
+    # epsilon-greedy: exploracion vs explotacion
+    if random.random() < epsilon:
+        # EXPLORACION: accion aleatoria
+        return random.randint(0, 11)  # 12 acciones
+    else:
+        basicstyle=\ttfamily\scriptsize,
+        with torch.no_grad():
+            estado_tensor = torch.FloatTensor(
+                estado).unsqueeze(0)
+            q_values = self.red(estado_tensor)
+            accion = q_values.argmax(dim=1)
+        return accion.item()
+    \end{lstlisting}

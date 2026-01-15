@@ -98,6 +98,13 @@ La motivación práctica es estudiar la estabilidad del entrenamiento con recurs
 Se utiliza Gymnasium \cite{gymnasium} con el entorno \textit{CarRacing-v3} \cite{gymnasium_carracing}. Gymnasium es una librería/framework de código abierto en Python para aprendizaje por refuerzo que proporciona una API estándar para interactuar con entornos  y para describir formalmente los espacios de observaciones y acciones. Además, incluye utilidades (
 \textit{wrappers}) para transformar observaciones/recompensas y facilitar la experimentación reproducible. La interacción agente--entorno sigue la especificación oficial: la observación es una imagen RGB de $96\times 96$ píxeles y la acción corresponde, en nuestro caso, a un control continuo de conducción: \mbox{(timón, acelerador, freno)} (en inglés: \textit{steer, gas, brake}).
 
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.8\linewidth]{figuras/carracing_entorno.png}
+\caption{Vista del entorno de simulación CarRacing-v3: observación RGB de $96\times 96$ píxeles desde perspectiva cenital, mostrando el vehículo (centro) navegando por la pista generada proceduralmente.}
+\label{fig:carracing_entorno}
+\end{figure}
+
 La dinámica de la simulación se implementa sobre Box2D \cite{box2d}, un motor de física 2D usado para simular colisiones y movimiento.
 
 \subsection{Discretización del espacio de acciones}
