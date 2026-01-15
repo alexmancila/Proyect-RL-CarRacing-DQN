@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1768516214.33824 "c:/temp/MIA_UNI_25-2/trabajo_final/Proyect-RL-CarRacing-DQN/Presentación/presentacion.tex" "presentacion.pdf" "presentacion" 1768516218.65979 0
+["pdflatex"] 1768516804.93544 "c:/temp/MIA_UNI_25-2/trabajo_final/Proyect-RL-CarRacing-DQN/Presentación/presentacion.tex" "presentacion.pdf" "presentacion" 1768516809.19626 0
   "../artículo/figuras/carracing_entorno.png" 1768495571 27628 cbe549985de4c683601e9ae8f34fb4c5 ""
   "../diagrama.png" 1767799118 60330 d88ad489940c7ccab1b89765ac08eea1 ""
   "../resultados/eval_1000_double_dqn/grafico_rewards.png" 1767799119 42416 c0444cc1929c7cba0b0194f70291d5a3 ""
@@ -275,13 +275,13 @@
   "C:/Users/QU1267/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ectt1095.pk" 1763658458 21972 4af2adeea7703977e403d3ed2e3fe7ef ""
   "C:/Users/QU1267/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcss1000.pk" 1768496511 10628 2025577238b659c20f872419df13ea41 ""
   "C:/Users/QU1267/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1761346531 13304791 7525731968c75d705eddc88c959701ea ""
-  "c:/temp/MIA_UNI_25-2/trabajo_final/Proyect-RL-CarRacing-DQN/Presentación/presentacion.tex" 1768516213 37292 ad8523d52918e0b581926b07c2dfacfb ""
-  "presentacion.aux" 1768516218 7995 3212825a166dd116f5e3856c219cc961 "pdflatex"
-  "presentacion.nav" 1768516218 5173 e6270043e4d94c45f2d4bdbc8134a29e "pdflatex"
-  "presentacion.out" 1768516218 977 bab2b15a417b24ed35adc99d77172611 "pdflatex"
-  "presentacion.tex" 1768516213 37292 ad8523d52918e0b581926b07c2dfacfb ""
-  "presentacion.toc" 1768516218 419 7f2c5d5d209bca5c2e11d3089d13bf25 "pdflatex"
-  "presentacion.vrb" 1768516216 622 0e62fb94ed08a0b5d15826d94f48c78c "pdflatex"
+  "c:/temp/MIA_UNI_25-2/trabajo_final/Proyect-RL-CarRacing-DQN/Presentación/presentacion.tex" 1768516803 37300 9f7b332ef2f4d6582911d830a42da76f ""
+  "presentacion.aux" 1768516808 7995 3212825a166dd116f5e3856c219cc961 "pdflatex"
+  "presentacion.nav" 1768516808 5173 e6270043e4d94c45f2d4bdbc8134a29e "pdflatex"
+  "presentacion.out" 1768516808 977 bab2b15a417b24ed35adc99d77172611 "pdflatex"
+  "presentacion.tex" 1768516803 37300 9f7b332ef2f4d6582911d830a42da76f ""
+  "presentacion.toc" 1768516808 419 7f2c5d5d209bca5c2e11d3089d13bf25 "pdflatex"
+  "presentacion.vrb" 1768516807 622 0e62fb94ed08a0b5d15826d94f48c78c "pdflatex"
   (generated)
   "presentacion.aux"
   "presentacion.log"
