@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.24)  15 JAN 2026 17:40
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.10.24)  15 JAN 2026 17:50
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -944,10 +944,10 @@ Overfull \hbox (2.34814pt too wide) in paragraph at lines 142--142
 [][][][]  
  []
 
-<../artículo/figuras/carracing_entorno.png, id=298, 2409.0pt x 1606.0pt>
-File: ../artículo/figuras/carracing_entorno.png Graphic file (type png)
-<use ../artículo/figuras/carracing_entorno.png>
-Package pdftex.def Info: ../artículo/figuras/carracing_entorno.png  used on input line 142.
+<figuras/carracing_entorno.png, id=298, 2409.0pt x 1606.0pt>
+File: figuras/carracing_entorno.png Graphic file (type png)
+<use figuras/carracing_entorno.png>
+Package pdftex.def Info: figuras/carracing_entorno.png  used on input line 142.
 (pdftex.def)             Requested size: 251.34032pt x 167.54448pt.
 
 Overfull \vbox (1.30937pt too high) detected at line 142
@@ -967,7 +967,7 @@ Overfull \hbox (38.0594pt too wide) has occurred while \output is active
 
 [5
 
- <../artículo/figuras/carracing_entorno.png (PNG copy)>]
+ <./figuras/carracing_entorno.png (PNG copy)>]
 Overfull \hbox (38.0594pt too wide) in paragraph at lines 147--147
  [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]  
  []
@@ -1345,10 +1345,10 @@ Overfull \hbox (2.34814pt too wide) in paragraph at lines 558--558
 [][][][]  
  []
 
-<../diagrama.png, id=1076, 2366.8425pt x 876.27374pt>
-File: ../diagrama.png Graphic file (type png)
-<use ../diagrama.png>
-Package pdftex.def Info: ../diagrama.png  used on input line 558.
+<figuras/diagrama.png, id=1076, 2366.8425pt x 876.27374pt>
+File: figuras/diagrama.png Graphic file (type png)
+<use figuras/diagrama.png>
+Package pdftex.def Info: figuras/diagrama.png  used on input line 558.
 (pdftex.def)             Requested size: 407.34178pt x 150.80974pt.
 
 Overfull \vbox (6.58029pt too high) detected at line 558
@@ -1368,7 +1368,7 @@ Overfull \hbox (38.0594pt too wide) has occurred while \output is active
 
 [20
 
- <../diagrama.png>]
+ <./figuras/diagrama.png>]
 Overfull \hbox (38.0594pt too wide) in paragraph at lines 560--560
  [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]  
  []
@@ -1540,20 +1540,20 @@ Overfull \hbox (2.34814pt too wide) in paragraph at lines 735--735
 [][][][]  
  []
 
-<../resultados/experimento_1000ep_dqn/grafico_reward.png, id=1447, 722.7pt x 433.62pt>
-File: ../resultados/experimento_1000ep_dqn/grafico_reward.png Graphic file (type png)
-<use ../resultados/experimento_1000ep_dqn/grafico_reward.png>
-Package pdftex.def Info: ../resultados/experimento_1000ep_dqn/grafico_reward.png  used on input line 735.
+<figuras/exp1000_dqn_grafico_reward.png, id=1447, 722.7pt x 433.62pt>
+File: figuras/exp1000_dqn_grafico_reward.png Graphic file (type png)
+<use figuras/exp1000_dqn_grafico_reward.png>
+Package pdftex.def Info: figuras/exp1000_dqn_grafico_reward.png  used on input line 735.
 (pdftex.def)             Requested size: 135.84776pt x 81.50865pt.
-<../resultados/experimento_1000ep_double_dqn/grafico_reward.png, id=1449, 722.7pt x 433.62pt>
-File: ../resultados/experimento_1000ep_double_dqn/grafico_reward.png Graphic file (type png)
-<use ../resultados/experimento_1000ep_double_dqn/grafico_reward.png>
-Package pdftex.def Info: ../resultados/experimento_1000ep_double_dqn/grafico_reward.png  used on input line 735.
+<figuras/exp1000_double_dqn_grafico_reward.png, id=1449, 722.7pt x 433.62pt>
+File: figuras/exp1000_double_dqn_grafico_reward.png Graphic file (type png)
+<use figuras/exp1000_double_dqn_grafico_reward.png>
+Package pdftex.def Info: figuras/exp1000_double_dqn_grafico_reward.png  used on input line 735.
 (pdftex.def)             Requested size: 135.84776pt x 81.50865pt.
-<../resultados/experimento_1000ep_dueling_double_dqn/grafico_reward.png, id=1450, 722.7pt x 433.62pt>
-File: ../resultados/experimento_1000ep_dueling_double_dqn/grafico_reward.png Graphic file (type png)
-<use ../resultados/experimento_1000ep_dueling_double_dqn/grafico_reward.png>
-Package pdftex.def Info: ../resultados/experimento_1000ep_dueling_double_dqn/grafico_reward.png  used on input line 735.
+<figuras/exp1000_dueling_double_dqn_grafico_reward.png, id=1450, 722.7pt x 433.62pt>
+File: figuras/exp1000_dueling_double_dqn_grafico_reward.png Graphic file (type png)
+<use figuras/exp1000_dueling_double_dqn_grafico_reward.png>
+Package pdftex.def Info: figuras/exp1000_dueling_double_dqn_grafico_reward.png  used on input line 735.
 (pdftex.def)             Requested size: 135.84776pt x 81.50865pt.
 
 
@@ -1569,7 +1569,7 @@ Overfull \hbox (38.0594pt too wide) has occurred while \output is active
 
 [27
 
- <../resultados/experimento_1000ep_dqn/grafico_reward.png> <../resultados/experimento_1000ep_double_dqn/grafico_reward.png> <../resultados/experimento_1000ep_dueling_double_dqn/grafico_reward.png>]
+ <./figuras/exp1000_dqn_grafico_reward.png> <./figuras/exp1000_double_dqn_grafico_reward.png> <./figuras/exp1000_dueling_double_dqn_grafico_reward.png>]
 Overfull \hbox (38.0594pt too wide) in paragraph at lines 762--762
  [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]  
  []
@@ -1579,20 +1579,20 @@ Overfull \hbox (2.34814pt too wide) in paragraph at lines 762--762
 [][][][]  
  []
 
-<../resultados/experimento_1000ep_dqn/grafico_loss.png, id=1503, 722.7pt x 433.62pt>
-File: ../resultados/experimento_1000ep_dqn/grafico_loss.png Graphic file (type png)
-<use ../resultados/experimento_1000ep_dqn/grafico_loss.png>
-Package pdftex.def Info: ../resultados/experimento_1000ep_dqn/grafico_loss.png  used on input line 762.
+<figuras/exp1000_dqn_grafico_loss.png, id=1503, 722.7pt x 433.62pt>
+File: figuras/exp1000_dqn_grafico_loss.png Graphic file (type png)
+<use figuras/exp1000_dqn_grafico_loss.png>
+Package pdftex.def Info: figuras/exp1000_dqn_grafico_loss.png  used on input line 762.
 (pdftex.def)             Requested size: 135.84776pt x 81.50865pt.
-<../resultados/experimento_1000ep_double_dqn/grafico_loss.png, id=1504, 722.7pt x 433.62pt>
-File: ../resultados/experimento_1000ep_double_dqn/grafico_loss.png Graphic file (type png)
-<use ../resultados/experimento_1000ep_double_dqn/grafico_loss.png>
-Package pdftex.def Info: ../resultados/experimento_1000ep_double_dqn/grafico_loss.png  used on input line 762.
+<figuras/exp1000_double_dqn_grafico_loss.png, id=1504, 722.7pt x 433.62pt>
+File: figuras/exp1000_double_dqn_grafico_loss.png Graphic file (type png)
+<use figuras/exp1000_double_dqn_grafico_loss.png>
+Package pdftex.def Info: figuras/exp1000_double_dqn_grafico_loss.png  used on input line 762.
 (pdftex.def)             Requested size: 135.84776pt x 81.50865pt.
-<../resultados/experimento_1000ep_dueling_double_dqn/grafico_loss.png, id=1505, 722.7pt x 433.62pt>
-File: ../resultados/experimento_1000ep_dueling_double_dqn/grafico_loss.png Graphic file (type png)
-<use ../resultados/experimento_1000ep_dueling_double_dqn/grafico_loss.png>
-Package pdftex.def Info: ../resultados/experimento_1000ep_dueling_double_dqn/grafico_loss.png  used on input line 762.
+<figuras/exp1000_dueling_double_dqn_grafico_loss.png, id=1505, 722.7pt x 433.62pt>
+File: figuras/exp1000_dueling_double_dqn_grafico_loss.png Graphic file (type png)
+<use figuras/exp1000_dueling_double_dqn_grafico_loss.png>
+Package pdftex.def Info: figuras/exp1000_dueling_double_dqn_grafico_loss.png  used on input line 762.
 (pdftex.def)             Requested size: 135.84776pt x 81.50865pt.
 
 
@@ -1608,7 +1608,7 @@ Overfull \hbox (38.0594pt too wide) has occurred while \output is active
 
 [28
 
- <../resultados/experimento_1000ep_dqn/grafico_loss.png> <../resultados/experimento_1000ep_double_dqn/grafico_loss.png> <../resultados/experimento_1000ep_dueling_double_dqn/grafico_loss.png>]
+ <./figuras/exp1000_dqn_grafico_loss.png> <./figuras/exp1000_double_dqn_grafico_loss.png> <./figuras/exp1000_dueling_double_dqn_grafico_loss.png>]
 Overfull \hbox (38.0594pt too wide) in paragraph at lines 789--789
  [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]  
  []
@@ -1618,20 +1618,20 @@ Overfull \hbox (2.34814pt too wide) in paragraph at lines 789--789
 [][][][]  
  []
 
-<../resultados/experimento_1000ep_dqn/grafico_epsilon.png, id=1558, 722.7pt x 433.62pt>
-File: ../resultados/experimento_1000ep_dqn/grafico_epsilon.png Graphic file (type png)
-<use ../resultados/experimento_1000ep_dqn/grafico_epsilon.png>
-Package pdftex.def Info: ../resultados/experimento_1000ep_dqn/grafico_epsilon.png  used on input line 789.
+<figuras/exp1000_dqn_grafico_epsilon.png, id=1558, 722.7pt x 433.62pt>
+File: figuras/exp1000_dqn_grafico_epsilon.png Graphic file (type png)
+<use figuras/exp1000_dqn_grafico_epsilon.png>
+Package pdftex.def Info: figuras/exp1000_dqn_grafico_epsilon.png  used on input line 789.
 (pdftex.def)             Requested size: 135.84776pt x 81.50865pt.
-<../resultados/experimento_1000ep_double_dqn/grafico_epsilon.png, id=1559, 722.7pt x 433.62pt>
-File: ../resultados/experimento_1000ep_double_dqn/grafico_epsilon.png Graphic file (type png)
-<use ../resultados/experimento_1000ep_double_dqn/grafico_epsilon.png>
-Package pdftex.def Info: ../resultados/experimento_1000ep_double_dqn/grafico_epsilon.png  used on input line 789.
+<figuras/exp1000_double_dqn_grafico_epsilon.png, id=1559, 722.7pt x 433.62pt>
+File: figuras/exp1000_double_dqn_grafico_epsilon.png Graphic file (type png)
+<use figuras/exp1000_double_dqn_grafico_epsilon.png>
+Package pdftex.def Info: figuras/exp1000_double_dqn_grafico_epsilon.png  used on input line 789.
 (pdftex.def)             Requested size: 135.84776pt x 81.50865pt.
-<../resultados/experimento_1000ep_dueling_double_dqn/grafico_epsilon.png, id=1560, 722.7pt x 433.62pt>
-File: ../resultados/experimento_1000ep_dueling_double_dqn/grafico_epsilon.png Graphic file (type png)
-<use ../resultados/experimento_1000ep_dueling_double_dqn/grafico_epsilon.png>
-Package pdftex.def Info: ../resultados/experimento_1000ep_dueling_double_dqn/grafico_epsilon.png  used on input line 789.
+<figuras/exp1000_dueling_double_dqn_grafico_epsilon.png, id=1560, 722.7pt x 433.62pt>
+File: figuras/exp1000_dueling_double_dqn_grafico_epsilon.png Graphic file (type png)
+<use figuras/exp1000_dueling_double_dqn_grafico_epsilon.png>
+Package pdftex.def Info: figuras/exp1000_dueling_double_dqn_grafico_epsilon.png  used on input line 789.
 (pdftex.def)             Requested size: 135.84776pt x 81.50865pt.
 
 
@@ -1647,7 +1647,7 @@ Overfull \hbox (38.0594pt too wide) has occurred while \output is active
 
 [29
 
- <../resultados/experimento_1000ep_dqn/grafico_epsilon.png> <../resultados/experimento_1000ep_double_dqn/grafico_epsilon.png> <../resultados/experimento_1000ep_dueling_double_dqn/grafico_epsilon.png>]
+ <./figuras/exp1000_dqn_grafico_epsilon.png> <./figuras/exp1000_double_dqn_grafico_epsilon.png> <./figuras/exp1000_dueling_double_dqn_grafico_epsilon.png>]
 Overfull \hbox (38.0594pt too wide) in paragraph at lines 816--816
  [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]  
  []
@@ -1657,20 +1657,20 @@ Overfull \hbox (2.34814pt too wide) in paragraph at lines 816--816
 [][][][]  
  []
 
-<../resultados/experimento_1000ep_dqn/grafico_buffer.png, id=1613, 722.7pt x 433.62pt>
-File: ../resultados/experimento_1000ep_dqn/grafico_buffer.png Graphic file (type png)
-<use ../resultados/experimento_1000ep_dqn/grafico_buffer.png>
-Package pdftex.def Info: ../resultados/experimento_1000ep_dqn/grafico_buffer.png  used on input line 816.
+<figuras/exp1000_dqn_grafico_buffer.png, id=1613, 722.7pt x 433.62pt>
+File: figuras/exp1000_dqn_grafico_buffer.png Graphic file (type png)
+<use figuras/exp1000_dqn_grafico_buffer.png>
+Package pdftex.def Info: figuras/exp1000_dqn_grafico_buffer.png  used on input line 816.
 (pdftex.def)             Requested size: 135.84776pt x 81.50865pt.
-<../resultados/experimento_1000ep_double_dqn/grafico_buffer.png, id=1614, 722.7pt x 433.62pt>
-File: ../resultados/experimento_1000ep_double_dqn/grafico_buffer.png Graphic file (type png)
-<use ../resultados/experimento_1000ep_double_dqn/grafico_buffer.png>
-Package pdftex.def Info: ../resultados/experimento_1000ep_double_dqn/grafico_buffer.png  used on input line 816.
+<figuras/exp1000_double_dqn_grafico_buffer.png, id=1614, 722.7pt x 433.62pt>
+File: figuras/exp1000_double_dqn_grafico_buffer.png Graphic file (type png)
+<use figuras/exp1000_double_dqn_grafico_buffer.png>
+Package pdftex.def Info: figuras/exp1000_double_dqn_grafico_buffer.png  used on input line 816.
 (pdftex.def)             Requested size: 135.84776pt x 81.50865pt.
-<../resultados/experimento_1000ep_dueling_double_dqn/grafico_buffer.png, id=1615, 722.7pt x 433.62pt>
-File: ../resultados/experimento_1000ep_dueling_double_dqn/grafico_buffer.png Graphic file (type png)
-<use ../resultados/experimento_1000ep_dueling_double_dqn/grafico_buffer.png>
-Package pdftex.def Info: ../resultados/experimento_1000ep_dueling_double_dqn/grafico_buffer.png  used on input line 816.
+<figuras/exp1000_dueling_double_dqn_grafico_buffer.png, id=1615, 722.7pt x 433.62pt>
+File: figuras/exp1000_dueling_double_dqn_grafico_buffer.png Graphic file (type png)
+<use figuras/exp1000_dueling_double_dqn_grafico_buffer.png>
+Package pdftex.def Info: figuras/exp1000_dueling_double_dqn_grafico_buffer.png  used on input line 816.
 (pdftex.def)             Requested size: 135.84776pt x 81.50865pt.
 
 
@@ -1686,7 +1686,7 @@ Overfull \hbox (38.0594pt too wide) has occurred while \output is active
 
 [30
 
- <../resultados/experimento_1000ep_dqn/grafico_buffer.png> <../resultados/experimento_1000ep_double_dqn/grafico_buffer.png> <../resultados/experimento_1000ep_dueling_double_dqn/grafico_buffer.png>]
+ <./figuras/exp1000_dqn_grafico_buffer.png> <./figuras/exp1000_double_dqn_grafico_buffer.png> <./figuras/exp1000_dueling_double_dqn_grafico_buffer.png>]
 Overfull \hbox (38.0594pt too wide) in paragraph at lines 843--843
  [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]  
  []
@@ -1696,20 +1696,20 @@ Overfull \hbox (2.34814pt too wide) in paragraph at lines 843--843
 [][][][]  
  []
 
-<../resultados/eval_1000_dqn/grafico_rewards.png, id=1668, 722.7pt x 433.62pt>
-File: ../resultados/eval_1000_dqn/grafico_rewards.png Graphic file (type png)
-<use ../resultados/eval_1000_dqn/grafico_rewards.png>
-Package pdftex.def Info: ../resultados/eval_1000_dqn/grafico_rewards.png  used on input line 843.
+<figuras/eval1000_dqn_grafico_rewards.png, id=1668, 722.7pt x 433.62pt>
+File: figuras/eval1000_dqn_grafico_rewards.png Graphic file (type png)
+<use figuras/eval1000_dqn_grafico_rewards.png>
+Package pdftex.def Info: figuras/eval1000_dqn_grafico_rewards.png  used on input line 843.
 (pdftex.def)             Requested size: 135.84776pt x 81.50865pt.
-<../resultados/eval_1000_double_dqn/grafico_rewards.png, id=1669, 722.7pt x 433.62pt>
-File: ../resultados/eval_1000_double_dqn/grafico_rewards.png Graphic file (type png)
-<use ../resultados/eval_1000_double_dqn/grafico_rewards.png>
-Package pdftex.def Info: ../resultados/eval_1000_double_dqn/grafico_rewards.png  used on input line 843.
+<figuras/eval1000_double_dqn_grafico_rewards.png, id=1669, 722.7pt x 433.62pt>
+File: figuras/eval1000_double_dqn_grafico_rewards.png Graphic file (type png)
+<use figuras/eval1000_double_dqn_grafico_rewards.png>
+Package pdftex.def Info: figuras/eval1000_double_dqn_grafico_rewards.png  used on input line 843.
 (pdftex.def)             Requested size: 135.84776pt x 81.50865pt.
-<../resultados/eval_1000_dueling_double_dqn/grafico_rewards.png, id=1670, 722.7pt x 433.62pt>
-File: ../resultados/eval_1000_dueling_double_dqn/grafico_rewards.png Graphic file (type png)
-<use ../resultados/eval_1000_dueling_double_dqn/grafico_rewards.png>
-Package pdftex.def Info: ../resultados/eval_1000_dueling_double_dqn/grafico_rewards.png  used on input line 843.
+<figuras/eval1000_dueling_double_dqn_grafico_rewards.png, id=1670, 722.7pt x 433.62pt>
+File: figuras/eval1000_dueling_double_dqn_grafico_rewards.png Graphic file (type png)
+<use figuras/eval1000_dueling_double_dqn_grafico_rewards.png>
+Package pdftex.def Info: figuras/eval1000_dueling_double_dqn_grafico_rewards.png  used on input line 843.
 (pdftex.def)             Requested size: 135.84776pt x 81.50865pt.
 
 
@@ -1725,7 +1725,7 @@ Overfull \hbox (38.0594pt too wide) has occurred while \output is active
 
 [31
 
- <../resultados/eval_1000_dqn/grafico_rewards.png> <../resultados/eval_1000_double_dqn/grafico_rewards.png> <../resultados/eval_1000_dueling_double_dqn/grafico_rewards.png>]
+ <./figuras/eval1000_dqn_grafico_rewards.png> <./figuras/eval1000_double_dqn_grafico_rewards.png> <./figuras/eval1000_dueling_double_dqn_grafico_rewards.png>]
 Overfull \hbox (38.0594pt too wide) in paragraph at lines 870--870
  [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]  
  []
@@ -1735,20 +1735,20 @@ Overfull \hbox (2.34814pt too wide) in paragraph at lines 870--870
 [][][][]  
  []
 
-<../resultados/eval_200_dqn/grafico_rewards.png, id=1723, 722.7pt x 433.62pt>
-File: ../resultados/eval_200_dqn/grafico_rewards.png Graphic file (type png)
-<use ../resultados/eval_200_dqn/grafico_rewards.png>
-Package pdftex.def Info: ../resultados/eval_200_dqn/grafico_rewards.png  used on input line 870.
+<figuras/eval200_dqn_grafico_rewards.png, id=1723, 722.7pt x 433.62pt>
+File: figuras/eval200_dqn_grafico_rewards.png Graphic file (type png)
+<use figuras/eval200_dqn_grafico_rewards.png>
+Package pdftex.def Info: figuras/eval200_dqn_grafico_rewards.png  used on input line 870.
 (pdftex.def)             Requested size: 135.84776pt x 81.50865pt.
-<../resultados/eval_200_double_dqn/grafico_rewards.png, id=1724, 722.7pt x 433.62pt>
-File: ../resultados/eval_200_double_dqn/grafico_rewards.png Graphic file (type png)
-<use ../resultados/eval_200_double_dqn/grafico_rewards.png>
-Package pdftex.def Info: ../resultados/eval_200_double_dqn/grafico_rewards.png  used on input line 870.
+<figuras/eval200_double_dqn_grafico_rewards.png, id=1724, 722.7pt x 433.62pt>
+File: figuras/eval200_double_dqn_grafico_rewards.png Graphic file (type png)
+<use figuras/eval200_double_dqn_grafico_rewards.png>
+Package pdftex.def Info: figuras/eval200_double_dqn_grafico_rewards.png  used on input line 870.
 (pdftex.def)             Requested size: 135.84776pt x 81.50865pt.
-<../resultados/eval_200_dueling_double_dqn/grafico_rewards.png, id=1725, 722.7pt x 433.62pt>
-File: ../resultados/eval_200_dueling_double_dqn/grafico_rewards.png Graphic file (type png)
-<use ../resultados/eval_200_dueling_double_dqn/grafico_rewards.png>
-Package pdftex.def Info: ../resultados/eval_200_dueling_double_dqn/grafico_rewards.png  used on input line 870.
+<figuras/eval200_dueling_double_dqn_grafico_rewards.png, id=1725, 722.7pt x 433.62pt>
+File: figuras/eval200_dueling_double_dqn_grafico_rewards.png Graphic file (type png)
+<use figuras/eval200_dueling_double_dqn_grafico_rewards.png>
+Package pdftex.def Info: figuras/eval200_dueling_double_dqn_grafico_rewards.png  used on input line 870.
 (pdftex.def)             Requested size: 135.84776pt x 81.50865pt.
 
 
@@ -1764,7 +1764,7 @@ Overfull \hbox (38.0594pt too wide) has occurred while \output is active
 
 [32
 
- <../resultados/eval_200_dqn/grafico_rewards.png> <../resultados/eval_200_double_dqn/grafico_rewards.png> <../resultados/eval_200_dueling_double_dqn/grafico_rewards.png>]
+ <./figuras/eval200_dqn_grafico_rewards.png> <./figuras/eval200_double_dqn_grafico_rewards.png> <./figuras/eval200_dueling_double_dqn_grafico_rewards.png>]
 Overfull \hbox (38.0594pt too wide) in paragraph at lines 875--875
  [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]  
  []
@@ -1973,7 +1973,7 @@ Package rerunfilecheck Info: File `presentacion.out' has not changed.
  ) 
 Here is how much of TeX's memory you used:
  26511 strings out of 468081
- 491537 string characters out of 5442620
+ 489759 string characters out of 5442620
  1115791 words of memory out of 5000000
  54543 multiletter control sequences out of 15000+600000
  651706 words of font info for 101 fonts, out of 8000000 for 9000
